@@ -1,13 +1,23 @@
 package revolhope.splanes.com.smartcam.helper;
 
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 
-import java.util.HashMap;
+import org.jetbrains.annotations.Contract;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
+
+    private static final int NEARBY_CONDITION = 6;
+    private static final int NEARBY_LONGITUDE_CONDITION = 100;
 
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
     private SparseArray<TextBlock> previousDetections;
@@ -28,28 +38,128 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     public void receiveDetections(Detector.Detections<TextBlock> detections) {
 
 
-        // MINE!
-
-
-
-        // END MINE!
-
-
-
-
+        // ==================================== MINE!
 
         mGraphicOverlay.clear();
-        SparseArray<TextBlock> items = detections.getDetectedItems();
 
-        for (int i = 0; i < items.size(); ++i)
+        if(previousDetections != null)
         {
-            TextBlock item = items.valueAt(i);
+            SparseArray<TextBlock> items = detections.getDetectedItems();
+
+            TextBlock prevItem;
+            TextBlock currItem;
+
+            int prevSize = previousDetections.size();
+            int currSize = items.size();
+
+            int j;
+            for ( int i = 0 ; i < prevSize ; i++ )
+            {
+                for ( j = 0 ; j < currSize ; j++ )
+                {
+                    prevItem = previousDetections.valueAt(i);
+                    currItem = items.valueAt(j);
+
+                    // Check by content & location
+                    if (areNearby(prevItem, currItem ) &&
+                        haveSimilarContent(prevItem, currItem))
+                    {
+                        OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, getBestOption(prevItem, currItem));
+                        mGraphicOverlay.add(graphic);
+                    }
+                }
+            }
+        }
+
+        previousDetections = detections.getDetectedItems();
+
+        // ==================================== END MINE!
+
+
+
+
+
+//        mGraphicOverlay.clear();
+//        SparseArray<TextBlock> items = detections.getDetectedItems();
+//
+//        for (int i = 0; i < items.size(); ++i)
+//        {
+//            TextBlock item = items.valueAt(i);
 //            if (item != null && item.getValue() != null) {
 //                Log.d("OcrDetectorProcessor", "Text detected! " + item.getValue());
 //            }
-            OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
-            mGraphicOverlay.add(graphic);
+//            OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
+//            mGraphicOverlay.add(graphic);
+//        }
+    }
+
+    @Contract(pure = true)
+    private boolean areNearby(TextBlock previous, TextBlock current)
+    {
+        boolean[] booleans = new boolean[8];
+        Point[] prevPoints = previous.getCornerPoints();
+        Point[] currPoints = current.getCornerPoints();
+
+        for(int i = 0 ; i < 4 ; i++)
+        {
+            Point prevPoint = prevPoints[i];
+            Point currPoint = currPoints[i];
+
+            booleans[i*2] = currPoint.x > prevPoint.x + NEARBY_LONGITUDE_CONDITION || currPoint.x < prevPoint.x - NEARBY_LONGITUDE_CONDITION;
+            booleans[(i*2)+1] = currPoint.y > prevPoint.y + NEARBY_LONGITUDE_CONDITION || currPoint.y < prevPoint.y - NEARBY_LONGITUDE_CONDITION;
         }
+
+        // Not nearby point's count
+        int count = 0;
+        for (boolean b : booleans) count += b ? 1 : 0;
+
+        // Considering nearby if, at least, 5 (from 8) coordinates are close
+        return count < NEARBY_CONDITION;
+    }
+
+    @Contract(pure = true)
+    private boolean haveSimilarContent(TextBlock previous, TextBlock current)
+    {
+        String[] prevWords = previous.getValue().split(" ");
+        String[] currWords = current.getValue().split(" ");
+        List<String> listPrevWords = Arrays.asList(prevWords);
+
+        int count = 0;
+        for(String word : currWords)
+        {
+            count += listPrevWords.contains(word) ? 1 : 0;
+        }
+
+        int minSize = Math.min(prevWords.length, currWords.length);
+
+        // If is matching the half of words, return true
+        return (minSize - count) < minSize / 2;
+    }
+
+    @Nullable
+    @Contract(pure = true)
+    private TextBlock getBestOption(TextBlock previous, TextBlock current)
+    {
+        Rect prevRect = previous.getBoundingBox();
+        Rect currRect = current.getBoundingBox();
+
+        int prevSize = previous.getValue().split(" ").length;
+        int currSize = current.getValue().split(" ").length;
+
+        if ( prevSize > currSize )
+        {
+
+        }
+        else if(prevSize == currSize)
+        {
+
+        }
+        else
+        {
+
+        }
+
+        return null;
     }
 
     /**
