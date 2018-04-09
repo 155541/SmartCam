@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SmartCam</string>
+    <string name="label_activity_preview_camera">Scanning</string>
+    <string name="tab_text_1">Cards</string>
+    <string name="tab_text_2">Notes</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Allow SmartCam to take pictures and record video?</string>
+    <string name="low_storage_error">Error x0: Low storage..</string>
+    <string name="no_camera_permission">Error x1: No camera permissions..</string>
+</resources>
