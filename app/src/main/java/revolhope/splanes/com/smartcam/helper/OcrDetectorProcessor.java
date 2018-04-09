@@ -10,12 +10,11 @@ import java.util.HashMap;
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
-    private HashMap<TextBlock, Integer> map;
+    private SparseArray<TextBlock> previousDetections;
 
-
-    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay) {
+    public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay)
+    {
         mGraphicOverlay = ocrGraphicOverlay;
-        map = new HashMap<>();
     }
 
     /**
@@ -28,19 +27,23 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     @Override
     public void receiveDetections(Detector.Detections<TextBlock> detections) {
 
-        //mGraphicOverlay.clear();
+
+        // MINE!
+
+
+
+        // END MINE!
+
+
+
+
+
+        mGraphicOverlay.clear();
         SparseArray<TextBlock> items = detections.getDetectedItems();
 
         for (int i = 0; i < items.size(); ++i)
         {
             TextBlock item = items.valueAt(i);
-
-
-
-
-
-
-
 //            if (item != null && item.getValue() != null) {
 //                Log.d("OcrDetectorProcessor", "Text detected! " + item.getValue());
 //            }
