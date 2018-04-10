@@ -142,24 +142,45 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     {
         Rect prevRect = previous.getBoundingBox();
         Rect currRect = current.getBoundingBox();
-
+        int prevSum = prevRect.width() + prevRect.height();
+        int currSum = currRect.width() + currRect.height();
+        
         int prevSize = previous.getValue().split(" ").length;
         int currSize = current.getValue().split(" ").length;
 
-        if ( prevSize > currSize )
+        if(prevSize == currSize)
         {
-
+            if(prevSum >= currSum)
+            {
+                return previous;
+            }
+            else if(prevSum < currSum)
+            {
+                return current;
+            }
         }
-        else if(prevSize == currSize)
+        else if (prevSize > currSize)
         {
-
+            if(prevSum >= currSum)
+            {
+                return previous;
+            }
+            else if(prevSum < currSum)
+            {
+                return null; // TODO: Check!
+            }
         }
         else
         {
-
+            if(prevSum > currSum)
+            {
+                return null; // TODO: Check!
+            }
+            else if(prevSum <= currSum)
+            {
+                return current;
+            }
         }
-
-        return null;
     }
 
     /**
