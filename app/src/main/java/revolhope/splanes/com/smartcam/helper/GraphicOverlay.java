@@ -7,8 +7,9 @@ import android.view.View;
 
 import com.google.android.gms.vision.CameraSource;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -183,13 +184,13 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
         }
     }
 
-    public Iterator<T> getGraphics()
+    public List<T> getGraphics()
     {
         synchronized (mLock)
         {
             if(mGraphics != null)
             {
-                return mGraphics.iterator();
+                return new ArrayList<>(mGraphics);
             }
         }
         return null;

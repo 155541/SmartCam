@@ -30,6 +30,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -102,25 +104,54 @@ public class PreviewCamActivity extends AppCompatActivity {
             {
                 if(mGraphicOverlay != null && mGraphicOverlay.getGraphics() != null)
                 {
-                    Iterator<OcrGraphic> iteratorGraphics = mGraphicOverlay.getGraphics();
-                    StringBuilder sb = new StringBuilder();
-
-                    while(iteratorGraphics.hasNext())
-                    {
-                        OcrGraphic mGraphic = iteratorGraphics.next();
-                        if(mGraphic.getTextBlock() != null)
-                        {
-
-                            sb.insert(0, mGraphic.getTextBlock().getValue()).append("\n");
-                        }
-                    }
-
+                    String resultText = orderAndExtractGraphics(mGraphicOverlay.getGraphics());
                     Intent intent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
-                    intent.putExtra(TextRead, sb.toString());
+                    intent.putExtra(TextRead, resultText);
                     startActivity(intent);
                 }
             }
         });
+    }
+
+    @NonNull
+    private String orderAndExtractGraphics(@NotNull List<OcrGraphic> graphicList)
+    {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        int size = graphicList.size();
+        int minTop;
+        int index;
+
+
+        // Control
+//        System.out.println(" :......: SIZE :......: " + size);
+//        System.out.println(" :......: START :......: ");
+//        for (OcrGraphic ocr : graphicList) System.out.println(" :......: OCR :......: " + ocr.getTextBlock().getValue());
+//        System.out.println(" :......: END :......: ");
+
+
+        for (int i = 0 ; i < size ; i++)
+        {
+            minTop = graphicList.get(0).getTextBlock().getBoundingBox().top;
+            index = 0;
+
+            for( OcrGraphic ocrGraphic : graphicList)
+            {
+                if (ocrGraphic != null && ocrGraphic.getTextBlock() != null)
+                {
+                    if (minTop > ocrGraphic.getTextBlock().getBoundingBox().top)
+                    {
+                        minTop = ocrGraphic.getTextBlock().getBoundingBox().top;
+                        index = graphicList.indexOf(ocrGraphic);
+                    }
+                }
+            }
+
+            OcrGraphic top = graphicList.remove(index);
+            stringBuilder.append(top.getTextBlock().getValue()).append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 
     /**
