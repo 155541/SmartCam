@@ -3,13 +3,13 @@ package revolhope.splanes.com.smartcam.helper;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,13 +35,10 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
      * multiple detections.
      */
     @Override
-    public void receiveDetections(Detector.Detections<TextBlock> detections) {
-
-
-        // ==================================== MINE!
+    public void receiveDetections(Detector.Detections<TextBlock> detections)
+    {
 
         mGraphicOverlay.clear();
-
         if(previousDetections != null)
         {
             SparseArray<TextBlock> items = detections.getDetectedItems();
@@ -61,8 +58,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                     currItem = items.valueAt(j);
 
                     // Check by content & location
-                    if (areNearby(prevItem, currItem ) &&
-                        haveSimilarContent(prevItem, currItem))
+                    if (areNearby(prevItem, currItem ) && haveSimilarContent(prevItem, currItem))
                     {
                         OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, getBestOption(prevItem, currItem));
                         mGraphicOverlay.add(graphic);
@@ -70,31 +66,11 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
                 }
             }
         }
-
         previousDetections = detections.getDetectedItems();
-
-        // ==================================== END MINE!
-
-
-
-
-
-//        mGraphicOverlay.clear();
-//        SparseArray<TextBlock> items = detections.getDetectedItems();
-//
-//        for (int i = 0; i < items.size(); ++i)
-//        {
-//            TextBlock item = items.valueAt(i);
-//            if (item != null && item.getValue() != null) {
-//                Log.d("OcrDetectorProcessor", "Text detected! " + item.getValue());
-//            }
-//            OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
-//            mGraphicOverlay.add(graphic);
-//        }
     }
 
     @Contract(pure = true)
-    private boolean areNearby(TextBlock previous, TextBlock current)
+    private boolean areNearby(@NotNull TextBlock previous, @NotNull TextBlock current)
     {
         boolean[] booleans = new boolean[8];
         Point[] prevPoints = previous.getCornerPoints();
@@ -118,7 +94,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     }
 
     @Contract(pure = true)
-    private boolean haveSimilarContent(TextBlock previous, TextBlock current)
+    private boolean haveSimilarContent(@NotNull TextBlock previous, @NotNull TextBlock current)
     {
         String[] prevWords = previous.getValue().split(" ");
         String[] currWords = current.getValue().split(" ");
@@ -138,27 +114,49 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
     @Nullable
     @Contract(pure = true)
-    private TextBlock getBestOption(TextBlock previous, TextBlock current)
+    private TextBlock getBestOption(@NotNull TextBlock previous, @NotNull TextBlock current)
     {
         Rect prevRect = previous.getBoundingBox();
         Rect currRect = current.getBoundingBox();
+        int prevSum = prevRect.width() + prevRect.height();
+        int currSum = currRect.width() + currRect.height();
 
         int prevSize = previous.getValue().split(" ").length;
         int currSize = current.getValue().split(" ").length;
 
-        if ( prevSize > currSize )
+        if(prevSize == currSize)
         {
-
+            if(prevSum >= currSum)
+            {
+                return previous;
+            }
+            else if(prevSum < currSum)
+            {
+                return current;
+            }
         }
-        else if(prevSize == currSize)
+        else if (prevSize > currSize)
         {
-
+            if(prevSum >= currSum)
+            {
+                return previous;
+            }
+            else if(prevSum < currSum)
+            {
+                return null; // TODO: Check!
+            }
         }
         else
         {
-
+            if(prevSum > currSum)
+            {
+                return null; // TODO: Check!
+            }
+            else if(prevSum <= currSum)
+            {
+                return current;
+            }
         }
-
         return null;
     }
 
