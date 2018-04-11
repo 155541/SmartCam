@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
@@ -11,6 +12,7 @@ import com.google.android.gms.vision.text.TextBlock;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,35 +40,66 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     public void receiveDetections(Detector.Detections<TextBlock> detections)
     {
 
-        mGraphicOverlay.clear();
-        if(previousDetections != null)
+// =================================================================================================
+//      PRINT ALL DETECTIONS WITHOUT FILTER
+
+/*        SparseArray<TextBlock> sout = detections.getDetectedItems();
+        for(int i = 0 ; i < sout.size() ; i++ )
         {
-            SparseArray<TextBlock> items = detections.getDetectedItems();
+            System.out.println(" :......: Received :......: \n" + sout.valueAt(i).getValue());
+        }*/
 
-            TextBlock prevItem;
-            TextBlock currItem;
 
-            int prevSize = previousDetections.size();
-            int currSize = items.size();
 
-            int j;
-            for ( int i = 0 ; i < prevSize ; i++ )
-            {
-                for ( j = 0 ; j < currSize ; j++ )
-                {
-                    prevItem = previousDetections.valueAt(i);
-                    currItem = items.valueAt(j);
-
-                    // Check by content & location
-                    if (areNearby(prevItem, currItem ) && haveSimilarContent(prevItem, currItem))
-                    {
-                        OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, getBestOption(prevItem, currItem));
-                        mGraphicOverlay.add(graphic);
-                    }
-                }
-            }
+        if (rounds < 6)
+        {
+            checkRepeats(detections.getDetectedItems());
+            rounds++;
         }
-        previousDetections = detections.getDetectedItems();
+        else
+        {
+            rounds = 0;
+            mGraphicOverlay.clear();
+
+            for (TextBlock textBlock : getRepeatedGreaterThan(3))
+            {
+                OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, textBlock);
+                mGraphicOverlay.add(graphic);
+            }
+
+            repeats.clear();
+            textBlockSparseArray.clear();
+        }
+
+
+//        mGraphicOverlay.clear();
+//        if(previousDetections != null)
+//        {
+//            SparseArray<TextBlock> items = detections.getDetectedItems();
+//            TextBlock prevItem;
+//            TextBlock currItem;
+//
+//            int prevSize = previousDetections.size();
+//            int currSize = items.size();
+//
+//            int j;
+//            for ( int i = 0 ; i < prevSize ; i++ )
+//            {
+//                for ( j = 0 ; j < currSize ; j++ )
+//                {
+//                    prevItem = previousDetections.valueAt(i);
+//                    currItem = items.valueAt(j);
+//
+//                    // Check by content & location
+//                    if (areNearby(prevItem, currItem ) && haveSimilarContent(prevItem, currItem))
+//                    {
+//                        OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, getBestOption(prevItem, currItem));
+//                        mGraphicOverlay.add(graphic);
+//                    }
+//                }
+//            }
+//        }
+//        previousDetections = detections.getDetectedItems();
     }
 
     @Contract(pure = true)
@@ -164,7 +197,181 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
      * Frees the resources associated with this detection processor.
      */
     @Override
-    public void release() {
+    public void release()
+    {
         mGraphicOverlay.clear();
+    }
+
+
+
+    // TESTING
+
+
+    private void checkRepeats(@NotNull SparseArray<TextBlock> items)
+    {
+        int itemsSize = items.size();
+        int itemKey;
+        TextBlock itemValue;
+        String itemValueString;
+
+        List<String> listStringValues = new ArrayList<>();
+        int textBlockSparseArraySize = textBlockSparseArray.size();
+
+        int i;
+        for ( i = 0 ; i < textBlockSparseArraySize ; i++)
+        {
+            listStringValues.add(textBlockSparseArray.valueAt(i).getValue());
+        }
+
+        for ( i = 0 ; i < itemsSize ; i++)
+        {
+            itemKey = items.keyAt(i);
+            itemValue = items.valueAt(i);
+            itemValueString = itemValue.getValue();
+
+            int numRepeats = repeats.get(itemKey, VALUE_IF_NOT_FOUND);
+            if(numRepeats != VALUE_IF_NOT_FOUND)
+            {
+                repeats.put(itemKey, numRepeats+1);
+            }
+            else
+            {
+                repeats.put(itemKey, 1);
+            }
+            if (!listStringValues.contains(itemValueString))
+            {
+                textBlockSparseArray.put(itemKey, itemValue);
+                listStringValues.add(itemValueString);
+            }
+        }
+
+    }
+
+    private List<TextBlock> getRepeatedGreaterThan(int count)
+    {
+        List<TextBlock> list = new ArrayList<>();
+        int itemsSize = textBlockSparseArray.size();
+        int textBlocksSize = textBlockSparseArray.size();
+
+        int j;
+        for (int i = 0 ; i < itemsSize ; i++)
+        {
+            int itemKey = textBlockSparseArray.keyAt(i);
+            if (repeats.get(itemKey) > count)
+            {
+                TextBlock itemValue = textBlockSparseArray.get(itemKey);
+                boolean b = false;
+                for (j = 0 ; j < textBlocksSize ;  j++)
+                {
+                    if(haveSimilarContent(itemValue, textBlockSparseArray.valueAt(j)))
+                    {
+                        b = true;
+                    }
+                }
+                if(!b)
+                {
+                    list.add(itemValue);
+                }
+            }
+        }
+
+        return list;
+    }
+
+
+
+
+
+
+
+
+
+
+    private static final int VALUE_IF_NOT_FOUND = -200;
+
+    private static int rounds = 0;
+    private SparseIntArray repeats = new SparseIntArray();
+    private SparseArray<TextBlock> textBlockSparseArray = new SparseArray<>();
+
+    private void onDetect(@NotNull SparseArray<TextBlock> items)
+    {
+        SparseArray<TextBlock> realItems = new SparseArray<>();
+        int itemsSize = items.size();
+        int itemKey;
+        TextBlock itemValue;
+
+        // =========================================================================================
+        //          ATTEMPT TO DELETE REPEATED ITEMS OF SAME DETECTION SET
+        // =========================================================================================
+        for (int i = 0; i < itemsSize ; i++)
+        {
+            itemKey = items.keyAt(i);
+            itemValue = items.valueAt(i);
+
+            int j;
+            for (j = 0; j < itemsSize; j++) {
+                int auxItemKey = items.keyAt(j);
+                TextBlock auxItemValue = items.valueAt(j);
+
+                if (itemKey != auxItemKey) {
+                    String lineEvaluateItem = itemValue.getValue();
+                    String lineIterationItem = auxItemValue.getValue();
+
+                    if (lineIterationItem.contains(lineEvaluateItem) &&
+                            lineIterationItem.length() > lineEvaluateItem.length() &&
+                            areNearby(itemValue, auxItemValue)) {
+                        realItems.put(auxItemKey, auxItemValue);
+                    }
+                }
+            }
+        }
+
+        itemsSize = realItems.size();
+        for (int i = 0 ; i < itemsSize ; i++)
+        {
+        // =========================================================================================
+        //          UPDATE REPETITIONS FOR EACH 'TEXT BLOCK' FOUND
+        // =========================================================================================
+
+            itemKey = items.keyAt(i);
+            itemValue = items.valueAt(i);
+
+            int numRepeats = repeats.get(itemKey, VALUE_IF_NOT_FOUND);
+            if(numRepeats != VALUE_IF_NOT_FOUND)
+            {
+                repeats.delete(itemKey);
+                repeats.put(itemKey, numRepeats+1);
+            }
+            else
+            {
+                repeats.put(itemKey, 1);
+            }
+
+        // =========================================================================================
+        //          CHECK IF NEW ITEM DETECTED IS ALREADY STORED,
+        //          IF IT IS CHECK IF IT'S CONTENT IS BETTER THAN OLDER,
+        //          IF IT'S BETTER, REPLACE IT
+        // =========================================================================================
+
+            TextBlock textBlock = textBlockSparseArray.get(itemKey, null);
+            if(textBlock != null)
+            {
+                // Already found, check if length content is the same
+                int numWordsNew = itemValue.getValue().split(" ").length;
+                int numWordsExisting = textBlock.getValue().split(" ").length;
+
+                if(numWordsExisting < numWordsNew)
+                {
+                    textBlockSparseArray.delete(itemKey);
+                    textBlockSparseArray.put(itemKey, itemValue);
+                }
+            }
+            else
+            {
+                textBlockSparseArray.put(itemKey, itemValue);
+            }
+        }
+        // Increasing 'rounds' value up 1
+        rounds++;
     }
 }
