@@ -21,6 +21,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     private static final int NEARBY_CONDITION = 6;
     private static final int NEARBY_LONGITUDE_CONDITION = 100;
     private static final int VALUE_IF_NOT_FOUND = -200;
+    private static final int REPEAT_COUNT = 2;
 
     private static int round = 0;
     
@@ -33,6 +34,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay)
     {
         mGraphicOverlay = ocrGraphicOverlay;
+        detectionsSparseArray = new SparseArray<>();
     }
 
     /**
@@ -47,13 +49,13 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     {
         if(round < 5)
         {
-            saveDetectionsDistinc(detections);
+            saveDetectionsDistinct(detections.getDetectedItems());
             round++;
         }
         else
         {
             mGraphicOverlay.clear();
-            List<TextBlock> list = getRepeatedGreaterThan(2);
+            List<TextBlock> list = getRepeatedGreaterThan(REPEAT_COUNT);
             for (TextBlock block : list)
             {
                 OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, block);
@@ -177,7 +179,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         int detectionsSize = detectionsSparseArray.size();
         int itemKey;
         
-        for (int i = 0 ; i < itemsSize ; i++)
+        for (int i = 0 ; i < detectionsSize ; i++)
         {
             itemKey = detectionsSparseArray.keyAt(i);
             if (repeats.get(itemKey) > count)
@@ -188,8 +190,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         return list;
     }
     
-    @Contract(pure = true)
-    private void saveDetectionsDistinc(@NotNull SparseArray<TextBlock> detections)
+    private void saveDetectionsDistinct(@NotNull SparseArray<TextBlock> detections)
     {
         if(auxiliaryStringList == null)
         {
