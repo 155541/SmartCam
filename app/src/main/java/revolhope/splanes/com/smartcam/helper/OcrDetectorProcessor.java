@@ -39,18 +39,6 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     @Override
     public void receiveDetections(Detector.Detections<TextBlock> detections)
     {
-
-// =================================================================================================
-//      PRINT ALL DETECTIONS WITHOUT FILTER
-
-/*        SparseArray<TextBlock> sout = detections.getDetectedItems();
-        for(int i = 0 ; i < sout.size() ; i++ )
-        {
-            System.out.println(" :......: Received :......: \n" + sout.valueAt(i).getValue());
-        }*/
-
-
-
         if (rounds < 6)
         {
             checkRepeats(detections.getDetectedItems());
@@ -373,5 +361,39 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         }
         // Increasing 'rounds' value up 1
         rounds++;
+    }
+    
+    // private SparseArray<TextBlock> detectionsSparseArray;
+    // private List<String> auxiliaryStringList;
+    private void saveDetectionsDistinc(@NotNull SparseArray<TextBlock> detections)
+    {
+        if(auxiliaryStringList == null)
+        {
+            auxiliaryStringList = new ArrayList<>();
+        }
+        
+        int size = detections.size();
+        for(int i = 0 ; i < size ; i++)
+        {
+            String str = detections.valueAt(i).getValue().toLowerCase().trim();
+            if(!auxiliaryStringList.contains(str))
+            {
+                auxiliaryStringList.add(str);
+                detectionsSparseArray.put(detections.keyAt(i), detections.valueAt(i));
+                repeats.put(detections.keyAt(i), 1);
+            }
+            else
+            {
+                int numRepeats = repeats.get(detections.keyAt(i), VALUE_IF_NOT_FOUND);
+                if(numRepeats != VALUE_IF_NOT_FOUND)
+                {
+                    repeats.put(detections.keyAt(i), numRepeats+1);
+                }
+                else
+                {
+                    System.out.println(":....: STRANGE CASE :....:");
+                }
+            }
+        }
     }
 }
