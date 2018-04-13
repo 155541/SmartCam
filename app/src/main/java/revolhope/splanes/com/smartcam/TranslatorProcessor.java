@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TranslatorProcessor {
-  
-  
+    
   public static void detectLanguage(String sourceText, PrintStream out)
   {
     Translate translate = createTranslateService();
