@@ -23,6 +23,9 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     // TODO: Delete if not use of export to Constants class
     private static final int NEARBY_CONDITION = 6;
     private static final int NEARBY_LONGITUDE_CONDITION = 100;
+    // -------------------------------------------------------
+    private static final int VALUE_IF_NOT_FOUND = -200;
+    private static final int REPEAT_COUNT = 5;
 
     private static int round = 0;
     
