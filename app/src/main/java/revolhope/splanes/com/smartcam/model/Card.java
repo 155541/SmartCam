@@ -1,6 +1,5 @@
 package revolhope.splanes.com.smartcam.model;
 
-
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -32,73 +31,84 @@ public class Card {
     @ColumnInfo(name = "address")
     private String address;
     
-    // TODO: Create getters & setters. Are needed!
-
-    public int getCardId() {
+    public int getCardId()
+    {
         return cardId;
     }
 
-    public void setCardId(int cardId) {
+    public void setCardId(int cardId)
+    {
         this.cardId = cardId;
     }
 
-    public String getCompany() {
+    public String getCompany()
+    {
         return company;
     }
 
-    public void setCompany(String company) {
+    public void setCompany(String company)
+    {
         this.company = company;
     }
 
-    public String getFirstName() {
+    public String getFirstName()
+    {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(String firstName)
+    {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public String getLastName()
+    {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(String lastName)
+    {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
+    public String getEmail()
+    {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email)
+    {
         this.email = email;
     }
 
-    public String getPhone() {
+    public String getPhone()
+    {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(String phone)
+    {
         this.phone = phone;
     }
 
-    public String getWeb() {
+    public String getWeb()
+    {
         return web;
     }
 
-    public void setWeb(String web) {
+    public void setWeb(String web)
+    {
         this.web = web;
     }
 
-    public String getAddress() {
+    public String getAddress()
+    {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address)
+    {
         this.address = address;
     }
 
-
-    // Getters and setters are ignored for brevity,
-    // but they're required for Room to work.
 }
