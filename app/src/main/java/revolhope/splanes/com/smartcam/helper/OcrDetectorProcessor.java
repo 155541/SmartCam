@@ -20,10 +20,9 @@ import java.util.Set;
 
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
+    // TODO: Delete if not use of export to Constants class
     private static final int NEARBY_CONDITION = 6;
     private static final int NEARBY_LONGITUDE_CONDITION = 100;
-    private static final int VALUE_IF_NOT_FOUND = -200;
-    private static final int REPEAT_COUNT = 5;
 
     private static int round = 0;
     
@@ -217,7 +216,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
         for (int i = 0 ; i < size ; i++)
         {
-            if ( idsSparseIntArray.valueAt(i) >= REPEAT_COUNT)
+            if ( idsSparseIntArray.valueAt(i) >= Constants.REPEAT_COUNT)
             {
                 id = idsSparseIntArray.keyAt(i);
                 textBlocks.add(blockSparseArray.get(id, null));
@@ -237,9 +236,9 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         {
             textBlock = detections.valueAt(i);
             id = detections.keyAt(i);
-            r = idsSparseIntArray.get(id, VALUE_IF_NOT_FOUND);
+            r = idsSparseIntArray.get(id, Constants.VALUE_IF_NOT_FOUND);
 
-            if (r != VALUE_IF_NOT_FOUND)
+            if (r != Constants.VALUE_IF_NOT_FOUND)
             {
                 idsSparseIntArray.put(id, r+1);
             }
