@@ -10,6 +10,7 @@ import revolhope.splanes.com.smartcam.model.Card;
 public abstract class AppDatabase extends RoomDatabase {
     
     public abstract CardDao cardDao();
+    public abstract TranslationLogDao translationLogDao();
     //public abstract NotesDao notesDao();
     
 }
