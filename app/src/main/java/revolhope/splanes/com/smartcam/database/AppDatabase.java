@@ -6,7 +6,6 @@ import revolhope.splanes.com.smartcam.model.Card;
 
 /* =================================================================================
  * DOCUMENTATION:
- *
  * https://www.pluralsight.com/guides/android/making-a-notes-app-using-room-database
  * =============================================================================== */
 
