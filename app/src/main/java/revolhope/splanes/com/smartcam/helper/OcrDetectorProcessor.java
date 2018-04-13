@@ -14,27 +14,29 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
     private static final int NEARBY_CONDITION = 6;
     private static final int NEARBY_LONGITUDE_CONDITION = 100;
     private static final int VALUE_IF_NOT_FOUND = -200;
-    private static final int REPEAT_COUNT = 2;
+    private static final int REPEAT_COUNT = 5;
 
     private static int round = 0;
     
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
-    private SparseArray<TextBlock> detectionsSparseArray;
-    private SparseIntArray repeats = new SparseIntArray();
-    private List<String> auxiliaryStringList;
+    private SparseIntArray idsSparseIntArray;
+    private SparseArray<TextBlock> blockSparseArray;
     
 
     public OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay)
     {
         mGraphicOverlay = ocrGraphicOverlay;
-        detectionsSparseArray = new SparseArray<>();
+        idsSparseIntArray = new SparseIntArray();
+        blockSparseArray = new SparseArray<>();
     }
 
     /**
@@ -47,24 +49,26 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
     @Override
     public void receiveDetections(Detector.Detections<TextBlock> detections)
     {
-        if(round < 5)
+
+        if(round == 10)
         {
-            saveDetectionsDistinct(detections.getDetectedItems());
-            round++;
+            mGraphicOverlay.clear();
+            for (TextBlock block : getAndTryToClean())
+            {
+                if(block != null)
+                {
+                    OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, block);
+                    mGraphicOverlay.add(graphic);
+                }
+            }
+            idsSparseIntArray.clear();
+            blockSparseArray.clear();
+            round = 0;
         }
         else
         {
-            mGraphicOverlay.clear();
-            List<TextBlock> list = getRepeatedGreaterThan(REPEAT_COUNT);
-            for (TextBlock block : list)
-            {
-                OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, block);
-                mGraphicOverlay.add(graphic);
-            }
-            round = 0;
-            detectionsSparseArray.clear();
-            auxiliaryStringList.clear();
-            repeats.clear();
+            registerDetections(detections.getDetectedItems());
+            round++;
         }
     }
 
@@ -170,54 +174,79 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
 
 // =============================================================================================================================
-//      TESTING
+//                  DEVELOPING
 // =============================================================================================================================
-    
-    private List<TextBlock> getRepeatedGreaterThan(int count)
+
+    private List<TextBlock> getAndTryToClean()
     {
-        List<TextBlock> list = new ArrayList<>();
-        int detectionsSize = detectionsSparseArray.size();
-        int itemKey;
-        
-        for (int i = 0 ; i < detectionsSize ; i++)
+        List<TextBlock> textBlockList = getPersistedTextBlocks();
+        List<Integer> indexToDelete = new ArrayList<>();
+        String str1;
+        String str2;
+
+        for (TextBlock evaluated : textBlockList)
         {
-            itemKey = detectionsSparseArray.keyAt(i);
-            if (repeats.get(itemKey) > count)
+            for (TextBlock iterated : textBlockList)
             {
-                list.add(detectionsSparseArray.get(itemKey));
+                if (!evaluated.equals(iterated))
+                {
+                    str1 = evaluated.getValue().toUpperCase().trim();
+                    str2 = iterated.getValue().toUpperCase().trim();
+                    if (str2.contains(str1))
+                    {
+                        indexToDelete.add(textBlockList.indexOf(evaluated));
+                    }
+                }
             }
         }
-        return list;
-    }
-    
-    private void saveDetectionsDistinct(@NotNull SparseArray<TextBlock> detections)
-    {
-        if(auxiliaryStringList == null)
+
+        for(int index : indexToDelete)
         {
-            auxiliaryStringList = new ArrayList<>();
+            if (index < textBlockList.size())
+                textBlockList.remove(index);
         }
-        
-        int size = detections.size();
-        for(int i = 0 ; i < size ; i++)
+
+        return textBlockList;
+    }
+
+    private List<TextBlock> getPersistedTextBlocks()
+    {
+        List<TextBlock> textBlocks = new ArrayList<>();
+        int id;
+        int size = idsSparseIntArray.size();
+
+        for (int i = 0 ; i < size ; i++)
         {
-            String str = detections.valueAt(i).getValue().toLowerCase().trim();
-            if(!auxiliaryStringList.contains(str))
+            if ( idsSparseIntArray.valueAt(i) >= REPEAT_COUNT)
             {
-                auxiliaryStringList.add(str);
-                detectionsSparseArray.put(detections.keyAt(i), detections.valueAt(i));
-                repeats.put(detections.keyAt(i), 1);
+                id = idsSparseIntArray.keyAt(i);
+                textBlocks.add(blockSparseArray.get(id, null));
+            }
+        }
+        return textBlocks;
+    }
+
+    private void registerDetections(@NotNull SparseArray<TextBlock> detections)
+    {
+        int r;
+        int size = detections.size();
+        int id;
+        TextBlock textBlock;
+
+        for ( int i = 0 ; i < size ; i++ )
+        {
+            textBlock = detections.valueAt(i);
+            id = detections.keyAt(i);
+            r = idsSparseIntArray.get(id, VALUE_IF_NOT_FOUND);
+
+            if (r != VALUE_IF_NOT_FOUND)
+            {
+                idsSparseIntArray.put(id, r+1);
             }
             else
             {
-                int numRepeats = repeats.get(detections.keyAt(i), VALUE_IF_NOT_FOUND);
-                if(numRepeats != VALUE_IF_NOT_FOUND)
-                {
-                    repeats.put(detections.keyAt(i), numRepeats+1);
-                }
-                else
-                {
-                    System.out.println(":....: STRANGE CASE :....:");
-                }
+                idsSparseIntArray.put(id, 0);
+                blockSparseArray.put(id, textBlock);
             }
         }
     }
