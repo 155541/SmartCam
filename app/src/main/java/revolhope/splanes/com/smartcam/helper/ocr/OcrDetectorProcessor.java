@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.helper;
+package revolhope.splanes.com.smartcam.helper.ocr;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -14,13 +14,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+
+import revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay;
 
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
-    // TODO: Delete if not use of export to Constants class
     private static final int NEARBY_CONDITION = 6;
     private static final int NEARBY_LONGITUDE_CONDITION = 100;
     // -------------------------------------------------------
@@ -219,7 +218,7 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
         for (int i = 0 ; i < size ; i++)
         {
-            if ( idsSparseIntArray.valueAt(i) >= Constants.REPEAT_COUNT)
+            if ( idsSparseIntArray.valueAt(i) >= REPEAT_COUNT)
             {
                 id = idsSparseIntArray.keyAt(i);
                 textBlocks.add(blockSparseArray.get(id, null));
@@ -239,9 +238,9 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
         {
             textBlock = detections.valueAt(i);
             id = detections.keyAt(i);
-            r = idsSparseIntArray.get(id, Constants.VALUE_IF_NOT_FOUND);
+            r = idsSparseIntArray.get(id, VALUE_IF_NOT_FOUND);
 
-            if (r != Constants.VALUE_IF_NOT_FOUND)
+            if (r != VALUE_IF_NOT_FOUND)
             {
                 idsSparseIntArray.put(id, r+1);
             }

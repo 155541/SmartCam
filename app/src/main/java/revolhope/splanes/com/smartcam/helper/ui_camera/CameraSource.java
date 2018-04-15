@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.helper;
+package revolhope.splanes.com.smartcam.helper.ui_camera;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -55,7 +55,7 @@ import java.util.Map;
  * <li>android.permissions.CAMERA</li>
  * </ul>
  */
-@SuppressWarnings("deprecation")
+//@SuppressWarnings("deprecation")
 public class CameraSource {
 
     @SuppressLint("InlinedApi")

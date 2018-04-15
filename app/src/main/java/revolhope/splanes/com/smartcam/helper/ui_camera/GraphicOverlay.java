@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.helper;
+package revolhope.splanes.com.smartcam.helper.ui_camera;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -49,7 +49,7 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
 
         private GraphicOverlay mOverlay;
 
-        Graphic(GraphicOverlay overlay) {
+        public Graphic(GraphicOverlay overlay) {
             mOverlay = overlay;
         }
 
@@ -93,7 +93,7 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
          * Adjusts the x coordinate from the preview's coordinate system to the view coordinate
          * system.
          */
-        float translateX(float x)
+        protected float translateX(float x)
         {
             if (mOverlay.mFacing == CameraSource.CAMERA_FACING_FRONT)
             {
@@ -109,12 +109,12 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
          * Adjusts the y coordinate from the preview's coordinate system to the view coordinate
          * system.
          */
-        float translateY(float y)
+        protected float translateY(float y)
         {
             return scaleY(y);
         }
 
-        void postInvalidate()
+        protected void postInvalidate()
         {
             mOverlay.postInvalidate();
         }

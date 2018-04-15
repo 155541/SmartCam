@@ -8,17 +8,17 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true">
 
-    <revolhope.splanes.com.smartcam.helper.CameraSourcePreview
+    <revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <revolhope.splanes.com.smartcam.helper.GraphicOverlay
+        <revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay
             android:id="@+id/graphicOverlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </revolhope.splanes.com.smartcam.helper.CameraSourcePreview>
+    </revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabCapture"

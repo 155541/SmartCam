@@ -1,17 +1,15 @@
-package revolhope.splanes.com.smartcam.helper;
+package revolhope.splanes.com.smartcam.helper.ocr;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 
-import java.util.List;
+import revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay;
 
 public class OcrGraphic extends GraphicOverlay.Graphic {
-
 
     private int mId;
 
@@ -22,7 +20,7 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static Paint sTextPaint;
     private final TextBlock mText;
 
-    OcrGraphic(GraphicOverlay overlay, TextBlock text) {
+    public OcrGraphic(GraphicOverlay overlay, TextBlock text) {
         super(overlay);
 
         mText = text;

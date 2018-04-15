@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.helper;
+package revolhope.splanes.com.smartcam.helper.ui_camera;
 
 import android.Manifest;
 import android.content.Context;

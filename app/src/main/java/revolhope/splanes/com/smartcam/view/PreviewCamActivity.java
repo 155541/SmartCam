@@ -22,27 +22,24 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import revolhope.splanes.com.smartcam.R;
-import revolhope.splanes.com.smartcam.helper.CameraSource;
-import revolhope.splanes.com.smartcam.helper.CameraSourcePreview;
-import revolhope.splanes.com.smartcam.helper.GraphicOverlay;
-import revolhope.splanes.com.smartcam.helper.OcrDetectorProcessor;
-import revolhope.splanes.com.smartcam.helper.OcrGraphic;
+import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSource;
+import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview;
+import revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay;
+import revolhope.splanes.com.smartcam.helper.ocr.OcrDetectorProcessor;
+import revolhope.splanes.com.smartcam.helper.ocr.OcrGraphic;
 
 public class PreviewCamActivity extends AppCompatActivity {
 

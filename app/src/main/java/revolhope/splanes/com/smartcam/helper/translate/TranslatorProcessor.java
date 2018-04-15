@@ -1,4 +1,4 @@
-
+package revolhope.splanes.com.smartcam.helper.translate;
 /*
  * ===========================================================
  * Create the next package tree: 
@@ -14,9 +14,6 @@
  *  translator:
  *     TranslatorProcessor.java
  *
- * ===========================================================    
- *    Gradle:
- *    compile 'com.google.cloud:google-cloud-translate:1.24.1'
  * ===========================================================
  */
 
@@ -29,8 +26,11 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 import com.google.common.collect.ImmutableList;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import revolhope.splanes.com.smartcam.helper.Constants;
 
 public class TranslatorProcessor {
     
@@ -79,7 +79,7 @@ public class TranslatorProcessor {
     TranslateOption srcLang = TranslateOption.sourceLanguage(sourceLang);
     TranslateOption tgtLang = TranslateOption.targetLanguage(targetLang);
     TranslateOption model = TranslateOption.model(nmtModel ? 
-                                                  Constants.TRANSLATION_MODEL_NMT : 
+                                                  Constants.TRANSLATION_MODEL_NMT :
                                                   Constants.TRANSLATION_MODEL_BASE);
     
     Translation translation = translate.translate(sourceText, srcLang, tgtLang, model);
@@ -92,7 +92,6 @@ public class TranslatorProcessor {
    * @param sourceText source text to be translated
    * @param sourceLang source language of the text
    * @param targetLang target language of translated text
-   * @param out print stream
    */
   public static String translateTextWithOptions(
       String sourceText,
@@ -110,14 +109,18 @@ public class TranslatorProcessor {
   /**
    * Displays a list of supported languages and codes.
    *
-   * @param out print stream
    * @param tgtLang optional target language
    */
   public static List<String> displaySupportedLanguages(Optional<String> tgtLang) 
   {
     Translate translate = createTranslateService();
-    LanguageListOption target = LanguageListOption.targetLanguage(tgtLang.orElse("es"));
-    List<Language> languages = translate.listSupportedLanguages(target);
+      LanguageListOption target = null;
+
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+          target = LanguageListOption.targetLanguage(tgtLang.orElse("es"));
+      }
+
+      List<Language> languages = translate.listSupportedLanguages(target);
     
     List<String> langList = new ArrayList<>();
     for (Language language : languages)

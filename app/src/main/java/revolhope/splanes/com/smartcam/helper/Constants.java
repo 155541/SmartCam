@@ -1,3 +1,5 @@
+package revolhope.splanes.com.smartcam.helper;
+
 public class Constants
 {  
   
