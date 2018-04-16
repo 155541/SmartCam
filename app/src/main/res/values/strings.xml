@@ -17,4 +17,8 @@
     <string name="prompt_translate_to">To:</string>
     <string name="prompt_detect_lang">Detect language</string>
     <string name="prompt_spanish_lang">Spanish</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

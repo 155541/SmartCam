@@ -3,6 +3,7 @@ package revolhope.splanes.com.smartcam.helper.translate;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.auth.Credentials;
 import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
@@ -33,7 +34,10 @@ public class TranslateAsyncTask extends AsyncTask<String, Integer, String[]>
 
         int size;
         Translation translation;
-        Translate translate = TranslateOptions.newBuilder().build().getService();
+        TranslateOptions.Builder builder = TranslateOptions.newBuilder();
+        builder.setApiKey("AIzaSyAyUlLEpGh08aSLp0WyzkxZDNtwiGdjsto");
+
+        Translate translate = builder.build().getService();
         Translate.TranslateOption srcLang;
         Translate.TranslateOption tgtLang;
 
