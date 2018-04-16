@@ -2,8 +2,6 @@ package revolhope.splanes.com.smartcam.helper.translate;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.auth.Credentials;
 import com.google.cloud.translate.Detection;
 import com.google.cloud.translate.Language;
 import com.google.cloud.translate.Translate;
@@ -30,7 +28,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Integer, String[]>
     @Override
     protected String[] doInBackground(String[] objects)
     {
-        String[] result = null;
+        String[] result;
 
         int size;
         Translation translation;
@@ -64,7 +62,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Integer, String[]>
                 result = new String[size];
                 for (int i = 0; i < size ; i++)
                 {
-                    result[i] = languages.get(i).getName();
+                    result[i] = languages.get(i).getName() + " - " + languages.get(i).getCode();
                     Log.i(TAG, languages.get(i).getName() + " - " + languages.get(i).getCode());
                 }
                 return result;

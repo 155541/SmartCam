@@ -1,34 +1,32 @@
 package revolhope.splanes.com.smartcam.view;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.Optional;
-
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
 import revolhope.splanes.com.smartcam.helper.translate.CallbackAsyncTask;
 import revolhope.splanes.com.smartcam.helper.translate.TranslateAsyncTask;
-import revolhope.splanes.com.smartcam.helper.translate.TranslatorProcessor;
 
 public class TranslateActivity extends AppCompatActivity {
 
+    private TranslateAsyncTask asyncTask;
     private boolean permissionGranted;
 
     @Override
@@ -45,9 +43,9 @@ public class TranslateActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        requestInternedPermission();
+        requestInternetPermission();
 
-        TextView fromLang = findViewById(R.id.textView_language_from);
+        final TextView fromLang = findViewById(R.id.textView_language_from);
         TextView toLang = findViewById(R.id.textView_language_to);
 
         fromLang.setText(R.string.prompt_detect_lang);
@@ -55,6 +53,84 @@ public class TranslateActivity extends AppCompatActivity {
 
         final EditText textToTranslate = findViewById(R.id.editText_to_translate);
         TextView textTranslated = findViewById(R.id.textView_translatedText);
+
+        textToTranslate.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                asyncTask = new TranslateAsyncTask(new CallbackAsyncTask()
+                {
+                    @Override
+                    public void onAsyncTaskDone(final String[] result)
+                    {
+                        final int size = result.length;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(size > 1)
+                                {
+                                    fromLang.setText(R.string.prompt_pick_detected_languages);
+                                    fromLang.setOnClickListener(new View.OnClickListener()
+                                    {
+                                        int selected = -1;
+
+                                        @Override
+                                        public void onClick(View view) {
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                                            String[] lang = Constants.getFormattedLang(result);
+
+                                            builder .setTitle("Pick language")
+                                                    .setSingleChoiceItems(lang, -1, new DialogInterface.OnClickListener()
+                                                    {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i)
+                                                        {
+                                                            selected = i;
+                                                        }
+                                                    })
+                                                    .setPositiveButton("Pick", new DialogInterface.OnClickListener()
+                                                    {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i)
+                                                        {
+                                                            if(selected != -1)
+                                                                fromLang.setText(Constants.mapLanguages.get(result[selected]));
+                                                            else
+                                                                fromLang.setText(R.string.prompt_language_no_detected);
+                                                        }
+                                                    })
+                                                    .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
+                                                    {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i)
+                                                        {
+                                                            fromLang.setText(R.string.prompt_language_no_detected);
+                                                        }
+                                                    });
+                                        }
+                                    });
+                                }
+                                else if( size == 1)
+                                {
+                                    fromLang.setText(Constants.mapLanguages.get(result[0]));
+                                }
+                                else
+                                {
+                                    fromLang.setText(R.string.prompt_language_no_detected);
+                                }
+                            }
+                        });
+                    }
+                }, Constants.MODE_TRANSLATE_DETECT);
+                asyncTask.execute(editable.toString());
+            }
+        });
 
         Intent intent = getIntent();
         if(intent != null)
@@ -66,8 +142,6 @@ public class TranslateActivity extends AppCompatActivity {
         {
             textToTranslate.setText(null);
         }
-
-
         textTranslated.setText(null);
 
         findViewById(R.id.button_translate).setOnClickListener(new View.OnClickListener()
@@ -77,23 +151,28 @@ public class TranslateActivity extends AppCompatActivity {
             {
                 if(permissionGranted)
                 {
-                    TranslateAsyncTask asyncTask = new TranslateAsyncTask(new CallbackAsyncTask()
+                    asyncTask = new TranslateAsyncTask(new CallbackAsyncTask()
                     {
                         @Override
                         public void onAsyncTaskDone(String[] result)
                         {
-                            System.out.println(" :......: ASYNC-TASK RESULT :......: " + result[0]);
+                            int size = result.length;
+                            for (int i = 0 ; i < size ; i++)
+                            {
+                                System.out.println(" :......: ASYNC-TASK RESULT :......: Name:" + result[i]);
+                            }
+
                         }
 
-                    }, Constants.MODE_TRANSLATE_DETECT);
-                    asyncTask.execute("Hello");
+                    }, Constants.MODE_TRANSLATE_SUPPORTED_LANG);
+                    asyncTask.execute("ca");
                 }
             }
         });
     }
 
 
-    private void requestInternedPermission()
+    private void requestInternetPermission()
     {
        // Internet permission is not granted. Requesting permission
         final String[] permissions = new String[]{Manifest.permission.INTERNET};

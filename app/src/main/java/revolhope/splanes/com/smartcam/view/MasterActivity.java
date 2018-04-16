@@ -76,6 +76,8 @@ public class MasterActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings)
         {
+            Intent intent = new Intent(this, FullscreenActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

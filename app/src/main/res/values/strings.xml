@@ -15,10 +15,11 @@
     <string name="prompt_save_note">Save note</string>
     <string name="prompt_translate_from">From:</string>
     <string name="prompt_translate_to">To:</string>
-    <string name="prompt_detect_lang">Detect language</string>
+    <string name="prompt_detect_lang">Detecting language..</string>
     <string name="prompt_spanish_lang">Spanish</string>
-
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="prompt_language_no_detected">Language no detected</string>
+    <string name="prompt_pick_detected_languages">Pick detected languages</string>
 </resources>

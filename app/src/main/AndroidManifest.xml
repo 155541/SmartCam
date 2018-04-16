@@ -36,11 +36,13 @@
             android:name=".view.TranslateActivity"
             android:label="@string/tranlate_activity_title"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.FullscreenActivity"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"/>
     </application>
 
 </manifest>
