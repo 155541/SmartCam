@@ -63,72 +63,80 @@ public class TranslateActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable)
             {
-                asyncTask = new TranslateAsyncTask(new CallbackAsyncTask()
+                final String str = editable.toString();
+                if(str.isEmpty())
                 {
-                    @Override
-                    public void onAsyncTaskDone(final String[] result)
+                    fromLang.setText(R.string.prompt_language_no_detected);
+                }
+                else
+                {
+                    asyncTask = new TranslateAsyncTask(new CallbackAsyncTask()
                     {
-                        final int size = result.length;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(size > 1)
-                                {
-                                    fromLang.setText(R.string.prompt_pick_detected_languages);
-                                    fromLang.setOnClickListener(new View.OnClickListener()
+                        @Override
+                        public void onAsyncTaskDone(final String[] result)
+                        {
+                            final int size = result.length;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(size > 1)
                                     {
-                                        int selected = -1;
+                                        fromLang.setText(R.string.prompt_pick_detected_languages);
+                                        fromLang.setOnClickListener(new View.OnClickListener()
+                                        {
+                                            int selected = -1;
 
-                                        @Override
-                                        public void onClick(View view) {
+                                            @Override
+                                            public void onClick(View view) {
 
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                                            String[] lang = Constants.getFormattedLang(result);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                                                final String[] lang = Constants.getFormattedLang(result);
 
-                                            builder .setTitle("Pick language")
-                                                    .setSingleChoiceItems(lang, -1, new DialogInterface.OnClickListener()
-                                                    {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i)
+                                                builder .setTitle("Pick language")
+                                                        .setSingleChoiceItems(lang, -1, new DialogInterface.OnClickListener()
                                                         {
-                                                            selected = i;
-                                                        }
-                                                    })
-                                                    .setPositiveButton("Pick", new DialogInterface.OnClickListener()
-                                                    {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i)
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i)
+                                                            {
+                                                                selected = i;
+                                                            }
+                                                        })
+                                                        .setPositiveButton("Pick", new DialogInterface.OnClickListener()
                                                         {
-                                                            if(selected != -1)
-                                                                fromLang.setText(Constants.mapLanguages.get(result[selected]));
-                                                            else
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i)
+                                                            {
+                                                                if(selected != -1)
+                                                                    fromLang.setText(Constants.mapLanguages.get(lang[selected]));
+                                                                else
+                                                                    fromLang.setText(R.string.prompt_language_no_detected);
+                                                            }
+                                                        })
+                                                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
+                                                        {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i)
+                                                            {
                                                                 fromLang.setText(R.string.prompt_language_no_detected);
-                                                        }
-                                                    })
-                                                    .setNeutralButton("Cancel", new DialogInterface.OnClickListener()
-                                                    {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i)
-                                                        {
-                                                            fromLang.setText(R.string.prompt_language_no_detected);
-                                                        }
-                                                    });
-                                        }
-                                    });
+                                                            }
+                                                        });
+                                            }
+                                        });
+                                    }
+                                    else if( size == 1)
+                                    {
+                                        fromLang.setText(Constants.mapLanguages.get(result[0]));
+                                    }
+                                    else
+                                    {
+                                        fromLang.setText(R.string.prompt_language_no_detected);
+                                    }
                                 }
-                                else if( size == 1)
-                                {
-                                    fromLang.setText(Constants.mapLanguages.get(result[0]));
-                                }
-                                else
-                                {
-                                    fromLang.setText(R.string.prompt_language_no_detected);
-                                }
-                            }
-                        });
-                    }
-                }, Constants.MODE_TRANSLATE_DETECT);
-                asyncTask.execute(editable.toString());
+                            });
+                        }
+                    }, Constants.MODE_TRANSLATE_DETECT);
+                    asyncTask.execute(str);
+                }
             }
         });
 
