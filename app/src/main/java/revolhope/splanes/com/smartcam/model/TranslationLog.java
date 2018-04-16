@@ -24,6 +24,52 @@ public class TranslationLog {
 
     @ColumnInfo(name = "text_translated")
     private String trgText;
-       
-    // TODO: Create getters & setters. Are needed!
+
+    public int getTranslationLogId() {
+        return TranslationLogId;
+    }
+
+    public void setTranslationLogId(int translationLogId) {
+        TranslationLogId = translationLogId;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getSrcLang() {
+        return srcLang;
+    }
+
+    public void setSrcLang(String srcLang) {
+        this.srcLang = srcLang;
+    }
+
+    public String getSrcText() {
+        return srcText;
+    }
+
+    public void setSrcText(String srcText) {
+        this.srcText = srcText;
+    }
+
+    public String getTrgLang() {
+        return trgLang;
+    }
+
+    public void setTrgLang(String trgLang) {
+        this.trgLang = trgLang;
+    }
+
+    public String getTrgText() {
+        return trgText;
+    }
+
+    public void setTrgText(String trgText) {
+        this.trgText = trgText;
+    }
 }

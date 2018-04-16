@@ -3,6 +3,7 @@
     package="revolhope.splanes.com.smartcam">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
@@ -11,20 +12,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".view.MasterActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.PreviewCamActivity"
             android:label="@string/label_activity_preview_camera"/>
-        <activity android:name=".view.DisplayResultsActivity" />
+
+        <activity
+            android:name=".view.DisplayResultsActivity"
+            android:label="@string/result_activity_title"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".view.TranslateActivity"
+            android:label="@string/tranlate_activity_title"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

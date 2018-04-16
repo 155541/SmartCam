@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">SmartCam</string>
     <string name="label_activity_preview_camera">Scanning</string>
+    <string name="result_activity_title">Result</string>
+    <string name="tranlate_activity_title">Translate</string>
     <string name="tab_text_1">Cards</string>
     <string name="tab_text_2">Notes</string>
     <string name="action_settings">Settings</string>
@@ -9,4 +11,10 @@
     <string name="permission_camera_rationale">Allow SmartCam to take pictures and record video?</string>
     <string name="low_storage_error">Error x0: Low storage..</string>
     <string name="no_camera_permission">Error x1: No camera permissions..</string>
+    <string name="prompt_translate">Translate</string>
+    <string name="prompt_save_note">Save note</string>
+    <string name="prompt_translate_from">From:</string>
+    <string name="prompt_translate_to">To:</string>
+    <string name="prompt_detect_lang">Detect language</string>
+    <string name="prompt_spanish_lang">Spanish</string>
 </resources>
