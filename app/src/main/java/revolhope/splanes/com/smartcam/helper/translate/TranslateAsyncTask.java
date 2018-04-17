@@ -62,8 +62,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Integer, String[]>
                 result = new String[size];
                 for (int i = 0; i < size ; i++)
                 {
-                    result[i] = languages.get(i).getName() + " - " + languages.get(i).getCode();
-                    Log.i(TAG, languages.get(i).getName() + " - " + languages.get(i).getCode());
+                    result[i] = languages.get(i).getCode();
                 }
                 return result;
 
@@ -77,7 +76,7 @@ public class TranslateAsyncTask extends AsyncTask<String, Integer, String[]>
                 srcLang = Translate.TranslateOption.sourceLanguage(objects[0]);
                 tgtLang = Translate.TranslateOption.targetLanguage(objects[1]);
 
-                translation = translate.translate(objects[0], srcLang, tgtLang);
+                translation = translate.translate(objects[2], srcLang, tgtLang);
                 return new String[] { translation.getTranslatedText() };
 
             case Constants.MODE_TRANSLATE_OPTIONS_MODE:

@@ -4,6 +4,7 @@ package revolhope.splanes.com.smartcam.helper;
 import com.google.common.collect.ImmutableMap;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class Constants
             .put("bg","Bulgarian")
             .put("ca","Catalan")
             .put("ceb","Cebuano")
+            .put("zh","Chinese")
             .put("zh-CN","Chinese (Simplified)")
             .put("zh-TW","Chinese (Traditional)")
             .put("co","Corsican")
@@ -155,5 +157,22 @@ public class Constants
             list[i] = mapLanguages.get(code) + " (" + code + ")";
         }
         return list;
+    }
+
+    @Nullable
+    public static String getLanguageCode(String value)
+    {
+        if(mapLanguages.containsValue(value))
+        {
+            for (String key : mapLanguages.keySet())
+            {
+                if(mapLanguages.get(key).equals(value))
+                {
+                    return key;
+                }
+            }
+        }
+
+        return null;
     }
 }

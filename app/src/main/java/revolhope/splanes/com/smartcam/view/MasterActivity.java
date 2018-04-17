@@ -59,6 +59,16 @@ public class MasterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.ic_translate).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent i = new Intent(getApplicationContext(), TranslateActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
 
