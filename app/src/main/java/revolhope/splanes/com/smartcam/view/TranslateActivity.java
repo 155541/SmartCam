@@ -16,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -61,24 +60,20 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
         fromLang = findViewById(R.id.textView_language_from);
         toLang = findViewById(R.id.textView_language_to);
 
-        fromLang.setText(R.string.prompt_detect_lang);
+        fromLang.setText(R.string.prompt_no_language);
+        fromLang.setTextColor(getColor(android.R.color.holo_red_dark));
         toLang.setText(R.string.prompt_spanish_lang);
         toLang.setTextColor(getColor(android.R.color.holo_blue_dark));
 
         final EditText textToTranslate = findViewById(R.id.editText_to_translate);
         final TextView textTranslated = findViewById(R.id.textView_translatedText);
 
-        textToTranslate.setOnEditorActionListener(null);
-        textToTranslate.addTextChangedListener(new TextWatcher()
+        findViewById(R.id.button_detect_lang).setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void afterTextChanged(Editable editable)
+            public void onClick(View view)
             {
-                String str = editable.toString();
-                System.out.println(" :......: AFTER TEXT CHANGED :......: " + str);
-
+                String str = textToTranslate.getText().toString();
                 if(str.isEmpty())
                 {
                     fromLang.setText(R.string.prompt_language_no_detected);
@@ -101,24 +96,17 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                                 fromLang.setOnClickListener(new View.OnClickListener()
                                 {
                                     @Override
-                                    public void onClick(View view) {
+                                    public void onClick(View view)
+                                    {
+                                        String[] lang = Constants.getFormattedLang(result);
 
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
+                                        Picker picker = new Picker();
+                                        picker.list = lang;
+                                        picker.callbackPickLang = callbackPickLang;
+                                        picker.mode = PICK_LANG_FROM;
+                                        picker.source = result;
 
-                                                String[] lang = Constants.getFormattedLang(result);
-
-                                                Picker picker = new Picker();
-                                                picker.list = lang;
-                                                picker.callbackPickLang = callbackPickLang;
-                                                picker.mode = PICK_LANG_FROM;
-                                                picker.source = result;
-
-                                                picker.show(getSupportFragmentManager(), "Picker1");
-                                            }
-                                        });
-
+                                        picker.show(getSupportFragmentManager(), "Picker1");
                                     }
                                 });
                             }
@@ -137,8 +125,6 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                     asyncTask.execute(str);
                 }
             }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
         });
 
         Intent intent = getIntent();
@@ -210,9 +196,17 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                         }
 
                     }, Constants.MODE_TRANSLATE_OPTIONS);
-                    asyncTask.execute(Constants.getLanguageCode(fromLang.getText().toString()),
-                                      Constants.getLanguageCode(toLang.getText().toString()),
-                                      textToTranslate.getText().toString());
+
+                    String srcLang = Constants.getLanguageCode(fromLang.getText().toString());
+                    String tgtLang = Constants.getLanguageCode(toLang.getText().toString());
+                    if (srcLang != null && tgtLang != null)
+                    {
+                        asyncTask.execute(srcLang, tgtLang, textToTranslate.getText().toString());
+                    }
+                    else if(tgtLang == null)
+                    {
+                        Toast.makeText(getApplicationContext(), "No language to translate set..", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });

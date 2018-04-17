@@ -22,4 +22,5 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="prompt_language_no_detected">Language no detected</string>
     <string name="prompt_pick_detected_languages">Pick detected languages</string>
+    <string name="prompt_no_language">No language set</string>
 </resources>
