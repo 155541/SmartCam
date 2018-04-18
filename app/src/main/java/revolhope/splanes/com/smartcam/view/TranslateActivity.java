@@ -66,7 +66,7 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
         toLang.setTextColor(getColor(android.R.color.holo_blue_dark));
 
         final EditText textToTranslate = findViewById(R.id.editText_to_translate);
-        final TextView textTranslated = findViewById(R.id.textView_translatedText);
+        final EditText textTranslated = findViewById(R.id.editText_translatedText);
 
         findViewById(R.id.button_detect_lang).setOnClickListener(new View.OnClickListener()
         {

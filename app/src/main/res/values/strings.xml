@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">SmartCam</string>
-    <string name="label_activity_preview_camera">Scanning</string>
-    <string name="result_activity_title">Result</string>
+    <string name="label_activity_preview_camera">Scanning text…</string>
+    <string name="result_activity_title">Scan result</string>
+    <string name="result_activity_subtitle">Edit the text below if necessary</string>
     <string name="tranlate_activity_title">Translate</string>
     <string name="tab_text_1">Cards</string>
     <string name="tab_text_2">Notes</string>
@@ -18,7 +19,7 @@
     <string name="prompt_detect_lang">Detecting language..</string>
     <string name="prompt_spanish_lang">Spanish</string>
     <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="button_scan">Capture</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="prompt_language_no_detected">Language no detected</string>
     <string name="prompt_pick_detected_languages">Pick detected languages</string>

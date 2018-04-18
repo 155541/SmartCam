@@ -15,25 +15,24 @@ import revolhope.splanes.com.smartcam.helper.Constants;
 
 public class DisplayResultsActivity extends AppCompatActivity {
 
-    String result;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scan_result);
 
-
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null)
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setSubtitle(R.string.result_activity_subtitle);
         }
 
-        EditText editText = findViewById(R.id.editText_Results);
+        final EditText editText = findViewById(R.id.editText_Results);
         Intent intent = getIntent();
         if(intent != null && intent.hasExtra(PreviewCamActivity.TextRead))
         {
-            result = getIntent().getStringExtra(PreviewCamActivity.TextRead);
+            String result = getIntent().getStringExtra(PreviewCamActivity.TextRead);
             editText.setText(result);
         }
 
@@ -42,10 +41,12 @@ public class DisplayResultsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                if(result != null)
+
+                String text = editText.getText().toString();
+                if(!text.isEmpty())
                 {
                     Intent i = new Intent(getApplicationContext(), TranslateActivity.class);
-                    i.putExtra(Constants.TEXT_TO_TRANSLATE, result);
+                    i.putExtra(Constants.TEXT_TO_TRANSLATE, text);
                     startActivity(i);
                     finish();
                 }
