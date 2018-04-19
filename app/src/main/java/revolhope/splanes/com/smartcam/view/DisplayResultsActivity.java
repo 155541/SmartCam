@@ -30,9 +30,9 @@ public class DisplayResultsActivity extends AppCompatActivity {
 
         final EditText editText = findViewById(R.id.editText_Results);
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra(PreviewCamActivity.TextRead))
+        if(intent != null && intent.hasExtra(Constants.TEXTREAD))
         {
-            String result = getIntent().getStringExtra(PreviewCamActivity.TextRead);
+            String result = getIntent().getStringExtra(Constants.TEXTREAD);
             editText.setText(result);
         }
 
@@ -57,7 +57,6 @@ public class DisplayResultsActivity extends AppCompatActivity {
             }
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)

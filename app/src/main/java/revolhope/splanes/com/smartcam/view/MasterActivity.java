@@ -90,6 +90,7 @@ public class MasterActivity extends AppCompatActivity {
             {
                 Intent i = new Intent(getApplicationContext(), PreviewCamActivity.class);
                 startActivity(i);
+                collapseFabs();
             }
         };
         fabNote.setOnClickListener(listenerPreviewCam);
@@ -100,8 +101,9 @@ public class MasterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(getApplicationContext(), PreviewCamActivity.class);
+                Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
                 startActivity(i);
+                collapseFabs();
             }
         });
 
@@ -112,6 +114,10 @@ public class MasterActivity extends AppCompatActivity {
             {
                 Intent i = new Intent(getApplicationContext(), TranslateActivity.class);
                 startActivity(i);
+                if(isShowingButtons)
+                {
+                    collapseFabs();
+                }
             }
         });
     }

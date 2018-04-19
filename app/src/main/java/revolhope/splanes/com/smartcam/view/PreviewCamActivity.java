@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import revolhope.splanes.com.smartcam.R;
+import revolhope.splanes.com.smartcam.helper.Constants;
 import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSource;
 import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview;
 import revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay;
@@ -47,21 +48,6 @@ import revolhope.splanes.com.smartcam.helper.ocr.OcrGraphic;
 public class PreviewCamActivity extends AppCompatActivity {
 
     private static final String TAG = "OcrCaptureActivity";
-
-    private static final boolean AUTO_HIDE = true;
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-    private static final int UI_ANIMATION_DELAY = 300;
-
-    // Intent request code to handle updating play services if needed.
-    private static final int RC_HANDLE_GMS = 9001;
-
-    // Permission request codes need to be < 256
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
-
-    private static final boolean AUTO_FOCUS = true;
-    private static final boolean USE_FLASH = false;
-
-    public static final String TextRead = "TextRead";
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
@@ -110,7 +96,7 @@ public class PreviewCamActivity extends AppCompatActivity {
                 {
                     String resultText = orderAndExtractGraphics(mGraphicOverlay.getGraphics());
                     Intent intent = new Intent(getApplicationContext(), DisplayResultsActivity.class);
-                    intent.putExtra(TextRead, resultText);
+                    intent.putExtra(Constants.TEXTREAD, resultText);
                     startActivity(intent);
                 }
             }
@@ -118,7 +104,7 @@ public class PreviewCamActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.preview);
+        mContentView = mPreview;
 
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +115,8 @@ public class PreviewCamActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
 
         // Trigger the initial hide() shortly after the activity has been
@@ -192,7 +179,7 @@ public class PreviewCamActivity extends AppCompatActivity {
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_CAMERA_PERM);
+            ActivityCompat.requestPermissions(this, permissions, Constants.RC_HANDLE_CAMERA_PERM);
             return;
         }
 
@@ -202,7 +189,7 @@ public class PreviewCamActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ActivityCompat.requestPermissions(thisActivity, permissions,
-                        RC_HANDLE_CAMERA_PERM);
+                        Constants.RC_HANDLE_CAMERA_PERM);
             }
         };
 
@@ -271,12 +258,9 @@ public class PreviewCamActivity extends AppCompatActivity {
         mCameraSource  = builder.setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1280, 1024)
                 .setRequestedFps(2.0f)
-                .setFlashMode(USE_FLASH ? Camera.Parameters.FLASH_MODE_TORCH : null)
-                .setFocusMode(AUTO_FOCUS ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null)
+                .setFlashMode(Constants.USE_FLASH ? Camera.Parameters.FLASH_MODE_TORCH : null)
+                .setFocusMode(Constants.AUTO_FOCUS ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null)
                 .build();
-
-
-
     }
 
     /**
@@ -319,7 +303,7 @@ public class PreviewCamActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        if (requestCode != RC_HANDLE_CAMERA_PERM)
+        if (requestCode != Constants.RC_HANDLE_CAMERA_PERM)
         {
             Log.d(TAG, "Got unexpected permission result: " + requestCode);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -363,7 +347,7 @@ public class PreviewCamActivity extends AppCompatActivity {
 
         if (code != ConnectionResult.SUCCESS)
         {
-            Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, RC_HANDLE_GMS);
+            Dialog dlg = GoogleApiAvailability.getInstance().getErrorDialog(this, code, Constants.RC_HANDLE_GMS);
             dlg.show();
         }
 
@@ -570,8 +554,8 @@ public class PreviewCamActivity extends AppCompatActivity {
     private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
+            if (Constants.AUTO_HIDE) {
+                delayedHide(Constants.AUTO_HIDE_DELAY_MILLIS);
             }
             return false;
         }
@@ -596,7 +580,7 @@ public class PreviewCamActivity extends AppCompatActivity {
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+        mHideHandler.postDelayed(mHidePart2Runnable, Constants.UI_ANIMATION_DELAY);
     }
 
     @SuppressLint("InlinedApi")
@@ -608,7 +592,7 @@ public class PreviewCamActivity extends AppCompatActivity {
 
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        mHideHandler.postDelayed(mShowPart2Runnable, Constants.UI_ANIMATION_DELAY);
     }
 
     /**

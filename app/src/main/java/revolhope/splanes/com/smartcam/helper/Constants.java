@@ -15,6 +15,21 @@ import java.util.Map;
 public class Constants
 {
 
+    // Camera
+    public static final boolean AUTO_HIDE = true;
+    public static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    public static final int UI_ANIMATION_DELAY = 300;
+
+    // Intent request code to handle updating play services if needed.
+    public static final int RC_HANDLE_GMS = 9001;
+
+    // Permission request codes need to be < 256
+    public static final int RC_HANDLE_CAMERA_PERM = 2;
+
+    public static final boolean AUTO_FOCUS = true;
+    public static final boolean USE_FLASH = false;
+    public static final String TEXTREAD = "TextRead";
+
     // Database constants
     public static final String DB_NAME = "AppDatabase";
 
