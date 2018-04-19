@@ -153,10 +153,9 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                         @Override
                         public void onAsyncTaskDone(final String[] result)
                         {
+
                             final String[] lang = Constants.getFormattedLang(result);
-
                             Picker picker = new Picker();
-
                             picker.list = lang;
                             picker.callbackPickLang = callbackPickLang;
                             picker.mode = PICK_LANG_TO;
@@ -199,9 +198,13 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
 
                     String srcLang = Constants.getLanguageCode(fromLang.getText().toString());
                     String tgtLang = Constants.getLanguageCode(toLang.getText().toString());
-                    if (srcLang != null && tgtLang != null)
+                    if (srcLang != null && tgtLang != null && !srcLang.equals(tgtLang))
                     {
                         asyncTask.execute(srcLang, tgtLang, textToTranslate.getText().toString());
+                    }
+                    else if(srcLang != null && tgtLang != null && srcLang.equals(tgtLang))
+                    {
+                        Toast.makeText(getApplicationContext(), "Both languages selected are the same..", Toast.LENGTH_LONG).show();
                     }
                     else if(tgtLang == null)
                     {
@@ -288,7 +291,7 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
         {
             if(result != null)
             {
-                toLang.setText(Constants.mapLanguages.get(result));
+                toLang.setText(result.split(" ")[0]);
                 toLang.setTextColor(ContextCompat.getColor(getApplicationContext(), android.R.color.black));
             }
             else
@@ -337,7 +340,7 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                             {
                                 if(selected != -1)
                                 {
-                                    callbackPickLang.onLangPicked(source[selected], mode);
+                                    callbackPickLang.onLangPicked(list[selected], mode);
                                 }
                                 else
                                 {

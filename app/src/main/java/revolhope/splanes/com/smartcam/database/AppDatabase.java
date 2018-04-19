@@ -7,7 +7,7 @@ import android.content.Context;
 
 import revolhope.splanes.com.smartcam.helper.Constants;
 import revolhope.splanes.com.smartcam.model.Card;
-import revolhope.splanes.com.smartcam.model.TranslationLog;
+import revolhope.splanes.com.smartcam.model.Note;
 
 /* =================================================================================
  * DOCUMENTATION:
@@ -17,13 +17,12 @@ import revolhope.splanes.com.smartcam.model.TranslationLog;
  * https://stackoverflow.com/questions/44322178/room-schema-export-directory-is-not-provided-to-the-annotation-processor-so-we
  * =============================================================================== */
 
-@Database(entities = {Card.class, TranslationLog.class}, version = 1, exportSchema = false)
+@Database(entities = {Card.class, Note.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     
     private static AppDatabase appDatabase;
     
     public abstract CardDao cardDao();
-    public abstract TranslationLogDao translationLogDao();
     //public abstract NotesDao notesDao();
         
     public static AppDatabase getInstance(Context context)
