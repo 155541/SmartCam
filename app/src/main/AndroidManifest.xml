@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme"
         android:largeHeap="true"
         android:hardwareAccelerated="false">
+
         <activity
             android:name=".view.MasterActivity"
             android:label="@string/app_name"
@@ -27,9 +28,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.PreviewCamActivity"
             android:label="@string/label_activity_preview_camera" />
+        <activity
+            android:name=".view.PreviewCamContactActivity"
+            android:label="Scanning contact..."/>
         <activity
             android:name=".view.DisplayResultsActivity"
             android:label="@string/result_activity_title"
@@ -38,7 +43,6 @@
             android:name=".view.TranslateActivity"
             android:label="@string/tranlate_activity_title"
             android:screenOrientation="portrait" />
-
     </application>
 
 </manifest>

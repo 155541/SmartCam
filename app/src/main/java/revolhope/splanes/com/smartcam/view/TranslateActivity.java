@@ -213,6 +213,17 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
                 }
             }
         });
+
+        findViewById(R.id.imageView_swap).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                String auxStr = fromLang.getText().toString();
+                fromLang.setText(toLang.getText().toString());
+                toLang.setText(auxStr);
+            }
+        });
     }
 
 

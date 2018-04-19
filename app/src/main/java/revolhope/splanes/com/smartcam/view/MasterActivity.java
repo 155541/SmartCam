@@ -1,5 +1,10 @@
 package revolhope.splanes.com.smartcam.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -17,6 +22,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import revolhope.splanes.com.smartcam.R;
@@ -24,6 +30,12 @@ import revolhope.splanes.com.smartcam.R;
 public class MasterActivity extends AppCompatActivity {
 
     private static final int PAGE_COUNT = 2;
+
+    private boolean isShowingButtons;
+    private FloatingActionButton fab;
+    private FloatingActionButton fabContact;
+    private FloatingActionButton fabTranslate;
+    private FloatingActionButton fabNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +56,52 @@ public class MasterActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        isShowingButtons = false;
+
+        fab = findViewById(R.id.fab);
+        fabContact = findViewById(R.id.fabContact);
+        fabTranslate = findViewById(R.id.fabTranslate);
+        fabNote = findViewById(R.id.fabNote);
+
         fab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), PreviewCamActivity.class);
-                startActivity(intent);
+
+                if(isShowingButtons)
+                {
+                    collapseFabs();
+                    fab.setImageDrawable(getDrawable(R.drawable.ic_camera_enhance_white_24dp));
+                }
+                else
+                {
+                    expandFabs();
+                    fab.setImageDrawable(getDrawable(R.drawable.ic_remove_white_24dp));
+                }
+                isShowingButtons = !isShowingButtons;
+            }
+        });
+
+        View.OnClickListener listenerPreviewCam = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent i = new Intent(getApplicationContext(), PreviewCamActivity.class);
+                startActivity(i);
+            }
+        };
+        fabNote.setOnClickListener(listenerPreviewCam);
+        fabTranslate.setOnClickListener(listenerPreviewCam);
+
+        fabContact.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent i = new Intent(getApplicationContext(), PreviewCamActivity.class);
+                startActivity(i);
             }
         });
 
@@ -73,6 +123,118 @@ public class MasterActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_master, menu);
         return true;
+    }
+
+    private void expandFabs()
+    {
+        ObjectAnimator translationXContact = ObjectAnimator.ofFloat(fabContact, "translationX", 0, -600);
+        ObjectAnimator alphaContact = ObjectAnimator.ofFloat(fabContact, "alpha", 0, 1);
+
+        ObjectAnimator translationXTranslate = ObjectAnimator.ofFloat(fabTranslate, "translationX", 0, -400);
+        ObjectAnimator alphaTranslate = ObjectAnimator.ofFloat(fabTranslate, "alpha", 0, 1);
+
+        ObjectAnimator translationXNote = ObjectAnimator.ofFloat(fabNote, "translationX", 0, -200);
+        ObjectAnimator alphaNote = ObjectAnimator.ofFloat(fabNote, "alpha", 0, 1);
+
+        translationXContact.setDuration(500);
+        alphaContact.setDuration(500);
+
+        translationXTranslate.setDuration(400);
+        alphaTranslate.setDuration(400);
+
+        translationXNote.setDuration(300);
+        alphaNote.setDuration(300);
+
+
+        AnimatorSet animatorSetContact = new AnimatorSet();
+        animatorSetContact.playTogether(translationXContact, alphaContact);
+
+        AnimatorSet animatorSetTranslate = new AnimatorSet();
+        animatorSetContact.playTogether(translationXTranslate, alphaTranslate);
+
+        AnimatorSet animatorSetNote = new AnimatorSet();
+        animatorSetContact.playTogether(translationXNote, alphaNote);
+
+        translationXContact.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                fabContact.setVisibility(View.VISIBLE);
+            }
+        });
+
+        translationXTranslate.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                fabTranslate.setVisibility(View.VISIBLE);
+            }
+        });
+
+        translationXNote.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                fabNote.setVisibility(View.VISIBLE);
+            }
+        });
+
+        animatorSetContact.start();
+        animatorSetTranslate.start();
+        animatorSetNote.start();
+    }
+
+    private void collapseFabs()
+    {
+        ObjectAnimator translationXContact = ObjectAnimator.ofFloat(fabContact, "translationX", -600, 0);
+        ObjectAnimator alphaContact = ObjectAnimator.ofFloat(fabContact, "alpha", 1, 0);
+
+        ObjectAnimator translationXTranslate = ObjectAnimator.ofFloat(fabTranslate, "translationX", -400, 0);
+        ObjectAnimator alphaTranslate = ObjectAnimator.ofFloat(fabTranslate, "alpha", 1, 0);
+
+        ObjectAnimator translationXNote = ObjectAnimator.ofFloat(fabNote, "translationX", -200, 0);
+        ObjectAnimator alphaNote = ObjectAnimator.ofFloat(fabNote, "alpha", 1, 0);
+
+        translationXContact.setDuration(500);
+        alphaContact.setDuration(300);
+
+        translationXTranslate.setDuration(400);
+        alphaTranslate.setDuration(200);
+
+        translationXNote.setDuration(300);
+        alphaNote.setDuration(100);
+
+
+        AnimatorSet animatorSetContact = new AnimatorSet();
+        animatorSetContact.playTogether(translationXContact, alphaContact);
+
+        AnimatorSet animatorSetTranslate = new AnimatorSet();
+        animatorSetContact.playTogether(translationXTranslate, alphaTranslate);
+
+        AnimatorSet animatorSetNote = new AnimatorSet();
+        animatorSetContact.playTogether(translationXNote, alphaNote);
+
+        translationXContact.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fabContact.setVisibility(View.GONE);
+            }
+        });
+
+        translationXTranslate.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fabTranslate.setVisibility(View.GONE);
+            }
+        });
+
+        translationXNote.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fabNote.setVisibility(View.GONE);
+            }
+        });
+
+        animatorSetContact.start();
+        animatorSetTranslate.start();
+        animatorSetNote.start();
     }
 
     /**
