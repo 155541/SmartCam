@@ -26,4 +26,7 @@ public interface CardDao {
 
     @Delete
     void delete(Card card);
+    
+    @Delete
+    void deleteAll(Card... cards);
 }
