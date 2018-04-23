@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.view;
+package revolhope.splanes.com.smartcam.view.contact;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,7 +25,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.text.TextRecognizer;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.util.List;
 
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
@@ -64,6 +67,18 @@ public class PreviewCamContactActivity extends AppCompatActivity
         {
             requestCameraPermission();
         }
+
+        findViewById(R.id.fabCapture).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getApplicationContext(), PreContactScanActivity.class);
+                String resultText = orderAndExtractGraphics(mGraphicOverlay.getGraphics());
+                intent.putExtra(Constants.TEXTREAD, resultText);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -101,6 +116,39 @@ public class PreviewCamContactActivity extends AppCompatActivity
         {
             mPreview.release();
         }
+    }
+
+    @NonNull
+    private String orderAndExtractGraphics(@NotNull List<OcrGraphic> graphicList)
+    {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        int size = graphicList.size();
+        int minTop;
+        int index;
+
+        for (int i = 0 ; i < size ; i++)
+        {
+            minTop = graphicList.get(0).getTextBlock().getBoundingBox().top;
+            index = 0;
+
+            for( OcrGraphic ocrGraphic : graphicList)
+            {
+                if (ocrGraphic != null && ocrGraphic.getTextBlock() != null)
+                {
+                    if (minTop > ocrGraphic.getTextBlock().getBoundingBox().top)
+                    {
+                        minTop = ocrGraphic.getTextBlock().getBoundingBox().top;
+                        index = graphicList.indexOf(ocrGraphic);
+                    }
+                }
+            }
+
+            OcrGraphic top = graphicList.remove(index);
+            stringBuilder.append(top.getTextBlock().getValue()).append("\n");
+        }
+
+        return stringBuilder.toString();
     }
 
     /**

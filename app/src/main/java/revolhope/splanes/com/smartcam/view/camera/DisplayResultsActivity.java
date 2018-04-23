@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.view;
+package revolhope.splanes.com.smartcam.view.camera;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +12,14 @@ import android.widget.Toast;
 
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
+import revolhope.splanes.com.smartcam.view.translate.TranslateActivity;
 
 public class DisplayResultsActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_scan_result);
 

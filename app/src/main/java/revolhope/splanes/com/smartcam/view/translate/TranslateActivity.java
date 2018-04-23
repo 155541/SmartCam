@@ -1,4 +1,4 @@
-package revolhope.splanes.com.smartcam.view;
+package revolhope.splanes.com.smartcam.view.translate;
 
 import android.Manifest;
 import android.app.Dialog;

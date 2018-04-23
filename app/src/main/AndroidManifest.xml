@@ -30,19 +30,26 @@
         </activity>
 
         <activity
-            android:name=".view.PreviewCamActivity"
+            android:name=".view.camera.PreviewCamActivity"
             android:label="@string/label_activity_preview_camera" />
         <activity
-            android:name=".view.PreviewCamContactActivity"
+            android:name=".view.contact.PreviewCamContactActivity"
             android:label="Scanning contact..."/>
         <activity
-            android:name=".view.DisplayResultsActivity"
+            android:name=".view.camera.DisplayResultsActivity"
             android:label="@string/result_activity_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.TranslateActivity"
+            android:name=".view.translate.TranslateActivity"
             android:label="@string/tranlate_activity_title"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".view.contact.PreContactScanActivity" />
+
+        <activity android:name=".view.contact.PreContactManuallyActivity" />
+
+        <activity android:name=".view.contact.PickScanOrSetContactActivity" android:theme="@style/Theme.Transparent" />
+
     </application>
 
 </manifest>

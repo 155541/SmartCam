@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:background="@android:color/white">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="1dp"
         android:background="@android:color/black"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp">
+        android:layout_marginEnd="30dp"
+        android:layout_gravity="center">
 
         <revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview
             android:id="@+id/preview"
@@ -30,4 +29,15 @@
                 android:keepScreenOn="true" />
         </revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview>
     </LinearLayout>
-</LinearLayout>
+
+    <Button
+        android:id="@+id/fabCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_scan"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
+        android:layout_gravity="center_horizontal|bottom"/>
+
+</android.support.design.widget.CoordinatorLayout>

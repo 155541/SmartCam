@@ -24,4 +24,11 @@
     <string name="prompt_language_no_detected">Language no detected</string>
     <string name="prompt_pick_detected_languages">Pick detected languages</string>
     <string name="prompt_no_language">No language set</string>
+    <string name="prompt_contact_name">Contact name</string>
+    <string name="prompt_phone">Phone</string>
+    <string name="prompt_mail">Mail</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_web_page">Web page</string>
+    <string name="contentDescription">contentDescription</string>
+    <string name="prompt_next">next</string>
 </resources>

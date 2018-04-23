@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
@@ -22,10 +21,12 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import revolhope.splanes.com.smartcam.R;
+import revolhope.splanes.com.smartcam.view.camera.PreviewCamActivity;
+import revolhope.splanes.com.smartcam.view.contact.PickScanOrSetContactActivity;
+import revolhope.splanes.com.smartcam.view.translate.TranslateActivity;
 
 public class MasterActivity extends AppCompatActivity {
 
@@ -101,7 +102,8 @@ public class MasterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
+                //Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
+                Intent i = new Intent(getApplicationContext(), PickScanOrSetContactActivity.class);
                 startActivity(i);
                 collapseFabs();
             }
@@ -241,6 +243,8 @@ public class MasterActivity extends AppCompatActivity {
         animatorSetContact.start();
         animatorSetTranslate.start();
         animatorSetNote.start();
+
+        fab.setImageDrawable(getDrawable(R.drawable.ic_camera_enhance_white_24dp));
     }
 
     /**
