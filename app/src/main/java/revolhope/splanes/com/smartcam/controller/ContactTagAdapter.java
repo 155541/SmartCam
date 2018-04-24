@@ -20,6 +20,8 @@ import revolhope.splanes.com.smartcam.model.Tag;
 public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Holder> {
 
     private Tag[] tags;
+    private List<Holder> holders;
+    
     private List<Tag> checkedTags;
     private LayoutInflater inflater;
 
@@ -34,7 +36,8 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         {
             this.tags = tags;
         }
-        checkedTags = new ArrayList<>(this.tags.length);
+        holders = new ArrayList<>();
+        checkedTags = new ArrayList<>();
     }
 
     @NonNull
@@ -79,7 +82,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
 
     public List<Tag> getCheckedTags()
     {
-        return checkedTags;
+        List<Tag>
     }
 
     class Holder extends RecyclerView.ViewHolder
@@ -110,23 +113,14 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
                     @Override
                     public void onClick(View view)
                     {
-
-                        int position = getAdapterPosition();
-
-                        if(checkedTextView.isChecked())
-                        {
-                            checkedTags.remove(position);
-                        }
-                        else
-                        {
-                            if(tags.length > position)
-                            {
-                                checkedTags.add(position, tags[getAdapterPosition()]);
-                            }
-                        }
                         checkedTextView.setChecked(!checkedTextView.isChecked());
                     }
                 });
+                
+                if(!holders.contains(this) )
+                {
+                    holders.add(this);
+                }
             }
         }
     }
