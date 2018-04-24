@@ -226,7 +226,6 @@ public class TranslateActivity extends AppCompatActivity implements CallbackPick
         });
     }
 
-
     private void requestInternetPermission()
     {
        // Internet permission is not granted. Requesting permission

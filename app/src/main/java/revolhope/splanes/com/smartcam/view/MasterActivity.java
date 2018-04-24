@@ -105,7 +105,11 @@ public class MasterActivity extends AppCompatActivity {
                 //Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
                 Intent i = new Intent(getApplicationContext(), PickScanOrSetContactActivity.class);
                 startActivity(i);
-                collapseFabs();
+                if (isShowingButtons)
+                {
+                    collapseFabs();
+                    isShowingButtons = false;
+                }
             }
         });
 
@@ -119,6 +123,7 @@ public class MasterActivity extends AppCompatActivity {
                 if(isShowingButtons)
                 {
                     collapseFabs();
+                    isShowingButtons = false;
                 }
             }
         });

@@ -31,4 +31,6 @@
     <string name="prompt_web_page">Web page</string>
     <string name="contentDescription">contentDescription</string>
     <string name="prompt_next">next</string>
+    <string name="button_done">DONE</string>
+    <string name="prompt_add_category">Add category</string>
 </resources>

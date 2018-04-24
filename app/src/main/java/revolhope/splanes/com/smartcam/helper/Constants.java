@@ -15,6 +15,13 @@ import java.util.Map;
 public class Constants
 {
 
+    // Contacts
+    public static final String CONTACT_NAME = "NAME";
+    public static final String CONTACT_PHONE = "PHONE";
+    public static final String CONTACT_MAIL = "MAIL";
+    public static final String CONTACT_LOCATION = "LOCATION";
+    public static final String CONTACT_WEB = "WEB";
+
     // Camera
     public static final boolean AUTO_HIDE = true;
     public static final int AUTO_HIDE_DELAY_MILLIS = 3000;

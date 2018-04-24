@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import revolhope.splanes.com.smartcam.helper.Constants;
-import revolhope.splanes.com.smartcam.model.Card;
+import revolhope.splanes.com.smartcam.model.Contact;
 import revolhope.splanes.com.smartcam.model.Note;
 
 /* =================================================================================
@@ -17,7 +17,7 @@ import revolhope.splanes.com.smartcam.model.Note;
  * https://stackoverflow.com/questions/44322178/room-schema-export-directory-is-not-provided-to-the-annotation-processor-so-we
  * =============================================================================== */
 
-@Database(entities = {Card.class, Note.class}, version = 1, exportSchema = false)
+@Database(entities = {Contact.class, Note.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     
     private static AppDatabase appDatabase;
