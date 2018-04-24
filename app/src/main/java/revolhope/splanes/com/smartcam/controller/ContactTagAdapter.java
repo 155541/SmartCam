@@ -20,7 +20,7 @@ import revolhope.splanes.com.smartcam.model.Tag;
 public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Holder> {
 
     private Tag[] tags;
-    private List<Holder> holders;
+    private Map<Tag, Holder> mapTagHolder;
     
     private List<Tag> checkedTags;
     private LayoutInflater inflater;
@@ -36,8 +36,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         {
             this.tags = tags;
         }
-        holders = new ArrayList<>();
-        checkedTags = new ArrayList<>();
+        mapTagHolder = new HashMap<>();
     }
 
     @NonNull
@@ -60,6 +59,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         {
             Tag tag = tags[position];
             holder.checkedTextView.setText(tag.getTagName());
+            mapTagHolder.put(tag, holder);
         }
     }
 
@@ -82,7 +82,18 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
 
     public List<Tag> getCheckedTags()
     {
-        List<Tag>
+        List<Tag> list = new ArrayList<>();
+        for (Tag tag : tags)
+        {
+            if(mapTagHolder.containsKey(tag))
+            {
+                if(mapTagHolder.get(tag).checkedTextView.isChecked())
+                {
+                    list.add(tag);
+                }
+            }
+        }
+        return list;
     }
 
     class Holder extends RecyclerView.ViewHolder
@@ -93,7 +104,6 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         private Holder (View view)
         {
             super(view);
-
             if(getAdapterPosition() == 0)
             {
                 view.setOnClickListener(new View.OnClickListener()
@@ -116,11 +126,6 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
                         checkedTextView.setChecked(!checkedTextView.isChecked());
                     }
                 });
-                
-                if(!holders.contains(this) )
-                {
-                    holders.add(this);
-                }
             }
         }
     }
