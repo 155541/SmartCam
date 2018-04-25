@@ -7,19 +7,20 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import revolhope.splanes.com.smartcam.helper.Constants;
 import revolhope.splanes.com.smartcam.model.Contact;
 
 @Dao
-public interface CardDao {
+public interface ContactDao {
 
-    @Query("SELECT * FROM Contact")
+    @Query("SELECT * FROM " + Constants.TABLE_CONTACT)
     List<Contact> getAll();
 
-    @Query("SELECT * FROM Contact WHERE cardId IN (:cardIds)")
-    List<Contact> loadAllByIds(int[] cardIds);
+    @Query("SELECT * FROM "+ Constants.TABLE_CONTACT +" WHERE contact_id IN (:contactIds)")
+    List<Contact> loadAllByIds(int[] contactIds);
 
-    @Query("SELECT * FROM Contact WHERE first_name LIKE :first AND last_name LIKE :last LIMIT 1")
-    Contact findByName(String first, String last);
+    @Query("SELECT * FROM "+ Constants.TABLE_CONTACT + " WHERE contact_name LIKE :contactName LIMIT 1")
+    Contact findByName(String contactName);
 
     @Insert
     void insertAll(Contact... contacts);

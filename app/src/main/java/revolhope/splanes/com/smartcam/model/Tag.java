@@ -2,7 +2,11 @@ package revolhope.splanes.com.smartcam.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+
+import java.util.UUID;
 
 /*
  * En el cas que el 'unique constrain' no funciones, provar amb @NonNull sobre els atributs unique (solucio d'un codelab Google)

@@ -2,21 +2,23 @@ package revolhope.splanes.com.smartcam.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-/*
- * En el cas que el 'unique constrain' no funciones, provar amb @NonNull sobre els atributs unique (solucio d'un codelab Google)
- */
-@Entity(tableName = "table_contact",
-        indices = {@Index(value = {"contact_name", "contact_phone"}, unique = true)})
+import java.util.UUID;
+
+@Entity(tableName = "table_contact")
 public class Contact {
     
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "contact_id")
     private String contactId;
 
+    @NonNull
     @ColumnInfo(name = "contact_name")
-    private String contactName
+    private String contactName;
 
     @ColumnInfo(name = "contact_email")
     private String contactEmail;
@@ -31,7 +33,7 @@ public class Contact {
     private String contactAddress;
     
     @Ignore
-    public Contact(String name, String phone, String mail, String address, String web)
+    public Contact(@NonNull String name, String phone, String mail, String address, String web)
     {
         this.contactId = UUID.randomUUID().toString();
         this.contactName = name;
@@ -41,15 +43,64 @@ public class Contact {
         this.contactWeb = web;
     }
     
-    public Contact(String id, String name, String phone, String mail, String address, String web)
+    public Contact(@NonNull String contactId, @NonNull String contactName, String contactPhone,
+                   String contactEmail, String contactAddress, String contactWeb)
     {
-        this.contactId = id;
-        this.contactName = name;
-        this.contactPhone = phone;
-        this.contactEmail = mail;
-        this.contactAddress = address;
-        this.contactWeb = web;
+        this.contactId = contactId;
+        this.contactName = contactName;
+        this.contactPhone = contactPhone;
+        this.contactEmail = contactEmail;
+        this.contactAddress = contactAddress;
+        this.contactWeb = contactWeb;
     }
-    
-    // TODO: Generate getters and setters
+
+    @NonNull
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(@NonNull String contactId) {
+        this.contactId = contactId;
+    }
+
+    @NonNull
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(@NonNull String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactWeb() {
+        return contactWeb;
+    }
+
+    public void setContactWeb(String contactWeb) {
+        this.contactWeb = contactWeb;
+    }
+
+    public String getContactAddress() {
+        return contactAddress;
+    }
+
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
+    }
 }

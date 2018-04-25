@@ -49,6 +49,7 @@
         <activity android:name=".view.contact.PreContactManuallyActivity" />
 
         <activity android:name=".view.contact.PickScanOrSetContactActivity" android:theme="@style/Theme.Transparent" />
+        <activity android:name=".view.contact.PreContactManuallyTagsActivity" />
 
     </application>
 

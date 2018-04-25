@@ -1,18 +1,17 @@
 package revolhope.splanes.com.smartcam.controller;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.model.Tag;
@@ -21,13 +20,13 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
 
     private Tag[] tags;
     private Map<Tag, Holder> mapTagHolder;
-    
-    private List<Tag> checkedTags;
     private LayoutInflater inflater;
+    private Drawable markDrawable;
 
-    public ContactTagAdapter(@NotNull Context context, Tag[] tags)
+    public ContactTagAdapter(@NonNull Context context, Tag[] tags)
     {
         inflater = LayoutInflater.from(context);
+        markDrawable = context.getDrawable(R.drawable.ic_done_black_24dp_small);
         if(tags == null)
         {
             this.tags = new Tag[1];
@@ -55,10 +54,11 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
 
-        if(tags != null && position != 0 && tags.length > position)
+        if(tags != null && position != 0 && tags.length > position-1)
         {
-            Tag tag = tags[position];
+            Tag tag = tags[position-1];
             holder.checkedTextView.setText(tag.getTagName());
+            holder.checkedTextView.setCheckMarkDrawable(null);
             mapTagHolder.put(tag, holder);
         }
     }
@@ -104,29 +104,25 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         private Holder (View view)
         {
             super(view);
-            if(getAdapterPosition() == 0)
+
+            checkedTextView = view.findViewById(R.id.checkedTextView);
+
+            view.setOnClickListener(new View.OnClickListener()
             {
-                view.setOnClickListener(new View.OnClickListener()
+                @Override
+                public void onClick(View view)
                 {
-                    @Override
-                    public void onClick(View view)
+                    if(getAdapterPosition() == 0)
                     {
                         // TODO __implement: 'Add new category'
                     }
-                });
-            }
-            else
-            {
-                checkedTextView = view.findViewById(R.id.checkedTextView);
-                view.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
+                    else
                     {
-                        checkedTextView.setChecked(!checkedTextView.isChecked());
+                        checkedTextView.toggle();
+                        checkedTextView.setCheckMarkDrawable( checkedTextView.isChecked() ? markDrawable : null );
                     }
-                });
-            }
+                }
+            });
         }
     }
 }

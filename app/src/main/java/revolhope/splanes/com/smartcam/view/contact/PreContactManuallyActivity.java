@@ -24,7 +24,7 @@ public class PreContactManuallyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_precontact);
+        setContentView(R.layout.activity_new_contact_fields);
 
 
         ActionBar actionBar = getSupportActionBar();

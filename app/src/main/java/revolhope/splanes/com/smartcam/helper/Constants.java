@@ -39,6 +39,8 @@ public class Constants
 
     // Database constants
     public static final String DB_NAME = "AppDatabase";
+    public static final String TABLE_CONTACT = "table_contact";
+    public static final String TABLE_TAG = "table_tag";
 
     // Translation constants
     public static final String TRANSLATION_MODEL_NMT = "nmt";
