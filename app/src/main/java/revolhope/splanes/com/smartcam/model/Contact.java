@@ -4,6 +4,9 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/*
+ * En el cas que el 'unique constrain' no funciones, provar amb @NonNull sobre els atributs unique (solucio d'un codelab Google)
+ */
 @Entity(tableName = "table_contact",
         indices = {@Index(value = {"contact_name", "contact_phone"}, unique = true)})
 public class Contact {
