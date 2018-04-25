@@ -13,16 +13,18 @@ import revolhope.splanes.com.smartcam.model.Note;
  * DOCUMENTATION:
  * https://www.pluralsight.com/guides/android/making-a-notes-app-using-room-database
  *
+ * ---> https://codelabs.developers.google.com/codelabs/android-room-with-a-view/#0 <---
+ *
  * Schema:
  * https://stackoverflow.com/questions/44322178/room-schema-export-directory-is-not-provided-to-the-annotation-processor-so-we
  * =============================================================================== */
 
-@Database(entities = {Contact.class, Note.class}, version = 1, exportSchema = false)
+@Database(entities = {Contact.class, Note.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     
     private static AppDatabase appDatabase;
     
-    public abstract CardDao cardDao();
+    public abstract ContactDao contactDao();
     //public abstract NotesDao notesDao();
         
     public static AppDatabase getInstance(Context context)
