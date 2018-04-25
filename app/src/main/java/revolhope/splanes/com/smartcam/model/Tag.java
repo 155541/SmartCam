@@ -1,7 +1,15 @@
 package revolhope.splanes.com.smartcam.model;
 
+@Entity(tableName = "table_tag", 
+        indices = {@Index(value = {"tag_name"},
+        unique = true)})
 public class Tag {
+    
+    @PrimaryKey
+    @ColumnInfo(name = "tag_id")
     private int tagId;
+    
+    @ColumnInfo(name = "tag_name")
     private String tagName;
 
     public Tag(int tagId, String tagName)
