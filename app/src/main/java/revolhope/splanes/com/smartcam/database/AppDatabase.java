@@ -67,7 +67,7 @@ public abstract class AppDatabase extends RoomDatabase {
     
     private static class PopulateDatabaseAsync extends AsyncTask<Void, Void, Void>
     {
-        private final TagDao mTagDao; //I supose "final" no will work
+        private TagDao mTagDao; //I supose "final" no will work
         private final Tag[] predeterminateTags =  {
                 new Tag("Restaurant"),
                 new Tag("Bar"),
@@ -88,7 +88,17 @@ public abstract class AppDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(final Void... params)
         {
-            if(!mTagDao.exists(predeterminateTags))
+            int size = predeterminateTags.length;
+            int i = 0;
+            String[] ids = new String[size];
+            
+            for (Tag tag : predeterminateTags)
+            {
+                ids[i] = tag.getTagId();
+                i++;
+            }
+            
+            if(mTagDao.exists(ids) < size)
             {
                 mTagDao.insert(predeterminateTags);
             }
