@@ -14,13 +14,15 @@ import revolhope.splanes.com.smartcam.model.Tag;
 @Dao
 public interface TagDao
 {
-
-    @Query("SELECT * from " + Constants.TABLE_TAG +" ORDER BY tag_name ASC")
-    LiveData<List<Tag>> getAll();
-
     @Insert
     void insert(Tag... tags);
 
     @Delete
     void delete(Tag... tags);
+    
+    @Query("SELECT * FROM " + Constants.TABLE_TAG +" ORDER BY tag_name ASC")
+    LiveData<List<Tag>> getAll();
+    
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_TAG +" WHERE tag_id IN (:tagIds)")
+    int exists(String[] tagIds);
 }
