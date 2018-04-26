@@ -58,9 +58,12 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
         if(tags != null && position != 0 && tags.length > position-1)
         {
             Tag tag = tags[position-1];
-            holder.checkedTextView.setText(tag.getTagName());
-            holder.checkedTextView.setCheckMarkDrawable(null);
-            mapTagHolder.put(tag, holder);
+            if(tag != null)
+            {
+                holder.checkedTextView.setText(tag.getTagName());
+                holder.checkedTextView.setCheckMarkDrawable(null);
+                mapTagHolder.put(tag, holder);
+            }
         }
     }
 
@@ -99,7 +102,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
 
     public void setTags(List<Tag> tags)
     {
-        this.tags =
+        this.tags = tags.toArray(new Tag[tags.size()]);
     }
 
     class Holder extends RecyclerView.ViewHolder

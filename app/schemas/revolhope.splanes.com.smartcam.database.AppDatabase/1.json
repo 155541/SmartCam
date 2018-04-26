@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "46a6444cc4a2757c887e91e7c1b69970",
+    "identityHash": "f0d55f4598e7affd4a33be6455ef823d",
     "entities": [
       {
         "tableName": "table_contact",
@@ -55,6 +55,41 @@
         "foreignKeys": []
       },
       {
+        "tableName": "table_tag",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_id` TEXT NOT NULL, `tag_name` TEXT, PRIMARY KEY(`tag_id`))",
+        "fields": [
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagName",
+            "columnName": "tag_name",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tag_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_table_tag_tag_name",
+            "unique": true,
+            "columnNames": [
+              "tag_name"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_table_tag_tag_name` ON `${TABLE_NAME}` (`tag_name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
         "tableName": "Note",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`noteId` INTEGER NOT NULL, PRIMARY KEY(`noteId`))",
         "fields": [
@@ -77,7 +112,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"46a6444cc4a2757c887e91e7c1b69970\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f0d55f4598e7affd4a33be6455ef823d\")"
     ]
   }
 }
