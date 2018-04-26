@@ -8,9 +8,6 @@ import android.support.annotation.NonNull;
 
 import java.util.UUID;
 
-/*
- * En el cas que el 'unique constrain' no funciones, provar amb @NonNull sobre els atributs unique (solucio d'un codelab Google)
- */
 @Entity(tableName = "table_tag")
 public class Tag {
     
