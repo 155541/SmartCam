@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +95,11 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
             }
         }
         return list;
+    }
+
+    public void setTags(List<Tag> tags)
+    {
+        this.tags =
     }
 
     class Holder extends RecyclerView.ViewHolder

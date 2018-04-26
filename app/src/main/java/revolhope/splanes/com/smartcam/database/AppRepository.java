@@ -20,7 +20,6 @@ public class AppRepository {
     private LiveData<List<Contact>> mAllContacts;
     //private LiveData<List<Note>> mAllNotes;
 
-
     public AppRepository(Application app)
     {
         AppDatabase appDatabase = AppDatabase.getInstance(app);
