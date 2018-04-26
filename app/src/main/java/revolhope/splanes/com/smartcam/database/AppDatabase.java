@@ -91,23 +91,13 @@ public abstract class AppDatabase extends RoomDatabase {
         protected Void doInBackground(final Void... params)
         {
             int size = predeterminedTags.length;
-            int i = 0;
-            String[] ids = new String[size];
             
             for (Tag tag : predeterminedTags)
             {
-                ids[i] = tag.getTagId();
-                i++;
-            }
-
-            int existing = mTagDao.exists(ids);
-
-            System.out.println(" :......: SIZE :......: " + size);
-            System.out.println(" :......: EXISTS SIZE :......: " + existing);
-
-            if( existing < size)
-            {
-                mTagDao.insert(predeterminedTags);
+                if(mTagDao.exists(tag.getTagId()) == null)
+                {
+                    mTagDao.insert(tag);
+                }
             }
             return null;
         }

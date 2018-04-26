@@ -28,14 +28,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
     {
         inflater = LayoutInflater.from(context);
         markDrawable = context.getDrawable(R.drawable.ic_done_black_24dp_small);
-        if(tags == null)
-        {
-            this.tags = new Tag[1];
-        }
-        else
-        {
-            this.tags = tags;
-        }
+        this.tags = tags;
         mapTagHolder = new HashMap<>();
     }
 
@@ -103,6 +96,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
     public void setTags(List<Tag> tags)
     {
         this.tags = tags.toArray(new Tag[tags.size()]);
+        notifyDataSetChanged();
     }
 
     class Holder extends RecyclerView.ViewHolder
