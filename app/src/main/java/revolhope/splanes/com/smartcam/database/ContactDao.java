@@ -1,5 +1,6 @@
 package revolhope.splanes.com.smartcam.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -14,13 +15,13 @@ import revolhope.splanes.com.smartcam.model.Contact;
 public interface ContactDao {
 
     @Query("SELECT * FROM " + Constants.TABLE_CONTACT)
-    List<Contact> getAll();
+    LiveData<List<Contact>> getAll();
 
     @Query("SELECT * FROM "+ Constants.TABLE_CONTACT +" WHERE contact_id IN (:contactIds)")
-    List<Contact> loadAllByIds(int[] contactIds);
+    LiveData<List<Contact>> loadAllByIds(int[] contactIds);
 
     @Query("SELECT * FROM "+ Constants.TABLE_CONTACT + " WHERE contact_name LIKE :contactName LIMIT 1")
-    Contact findByName(String contactName);
+    LiveData<Contact> findByName(String contactName);
 
     @Insert
     void insertAll(Contact... contacts);
