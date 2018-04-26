@@ -19,7 +19,7 @@ import revolhope.splanes.com.smartcam.controller.ContactTagAdapter;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagViewModel;
 
-public class PreContactManuallyTagsActivity extends AppCompatActivity {
+public class NewContactManTagsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

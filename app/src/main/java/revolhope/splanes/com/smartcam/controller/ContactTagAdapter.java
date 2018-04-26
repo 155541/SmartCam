@@ -118,6 +118,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
                     if(getAdapterPosition() == 0)
                     {
                         // TODO __implement: 'Add new category'
+
                     }
                     else
                     {

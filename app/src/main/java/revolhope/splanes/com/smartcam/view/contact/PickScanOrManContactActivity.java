@@ -9,7 +9,7 @@ import android.view.View;
 
 import revolhope.splanes.com.smartcam.R;
 
-public class PickScanOrSetContactActivity extends AppCompatActivity {
+public class PickScanOrManContactActivity extends AppCompatActivity {
 
 
     @Override
@@ -28,7 +28,7 @@ public class PickScanOrSetContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(getApplicationContext(), PreContactManuallyActivity.class);
+                Intent i = new Intent(getApplicationContext(), NewContactManInfoActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -39,7 +39,7 @@ public class PickScanOrSetContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
+                Intent i = new Intent(getApplicationContext(), CameraPreviewNewContactActivity.class);
                 startActivity(i);
                 finish();
             }

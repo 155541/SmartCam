@@ -13,7 +13,7 @@ import android.widget.Toast;
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
 
-public class PreContactManuallyActivity extends AppCompatActivity {
+public class NewContactManInfoActivity extends AppCompatActivity {
 
     private EditText editText_Name;
     private EditText editText_Phone;
@@ -50,7 +50,7 @@ public class PreContactManuallyActivity extends AppCompatActivity {
 
                 if(checkFields())
                 {
-                    Intent i = new Intent(getApplicationContext(), PreContactManuallyTagsActivity.class);
+                    Intent i = new Intent(getApplicationContext(), NewContactManTagsActivity.class);
                     i.putExtra(Constants.CONTACT_NAME, editText_Name.getText().toString());
                     i.putExtra(Constants.CONTACT_PHONE, editText_Phone.getText().toString());
                     i.putExtra(Constants.CONTACT_MAIL, editText_Mail.getText().toString());

@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.view.camera.PreviewCamActivity;
-import revolhope.splanes.com.smartcam.view.contact.PickScanOrSetContactActivity;
+import revolhope.splanes.com.smartcam.view.contact.PickScanOrManContactActivity;
 import revolhope.splanes.com.smartcam.view.translate.TranslateActivity;
 
 public class MasterActivity extends AppCompatActivity {
@@ -102,8 +102,8 @@ public class MasterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                //Intent i = new Intent(getApplicationContext(), PreviewCamContactActivity.class);
-                Intent i = new Intent(getApplicationContext(), PickScanOrSetContactActivity.class);
+                //Intent i = new Intent(getApplicationContext(), CameraPreviewNewContactActivity.class);
+                Intent i = new Intent(getApplicationContext(), PickScanOrManContactActivity.class);
                 startActivity(i);
                 if (isShowingButtons)
                 {

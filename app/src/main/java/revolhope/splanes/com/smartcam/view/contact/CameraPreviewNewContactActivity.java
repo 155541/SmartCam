@@ -38,7 +38,7 @@ import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSource;
 import revolhope.splanes.com.smartcam.helper.ui_camera.CameraSourcePreview;
 import revolhope.splanes.com.smartcam.helper.ui_camera.GraphicOverlay;
 
-public class PreviewCamContactActivity extends AppCompatActivity
+public class CameraPreviewNewContactActivity extends AppCompatActivity
 {
 
     private CameraSource mCameraSource;
@@ -73,7 +73,7 @@ public class PreviewCamContactActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(getApplicationContext(), PreContactScanActivity.class);
+                Intent intent = new Intent(getApplicationContext(), NewContactScanInfoActivity.class);
                 String resultText = orderAndExtractGraphics(mGraphicOverlay.getGraphics());
                 intent.putExtra(Constants.TEXTREAD, resultText);
                 startActivity(intent);

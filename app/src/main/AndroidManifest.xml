@@ -33,7 +33,7 @@
             android:name=".view.camera.PreviewCamActivity"
             android:label="@string/label_activity_preview_camera" />
         <activity
-            android:name=".view.contact.PreviewCamContactActivity"
+            android:name=".view.contact.CameraPreviewNewContactActivity"
             android:label="Scanning contact..."/>
         <activity
             android:name=".view.camera.DisplayResultsActivity"
@@ -44,12 +44,12 @@
             android:label="@string/tranlate_activity_title"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.contact.PreContactScanActivity" />
+        <activity android:name=".view.contact.NewContactScanInfoActivity" />
 
-        <activity android:name=".view.contact.PreContactManuallyActivity" />
+        <activity android:name=".view.contact.NewContactManInfoActivity" />
 
-        <activity android:name=".view.contact.PickScanOrSetContactActivity" android:theme="@style/Theme.Transparent" />
-        <activity android:name=".view.contact.PreContactManuallyTagsActivity" />
+        <activity android:name=".view.contact.PickScanOrManContactActivity" android:theme="@style/Theme.Transparent" />
+        <activity android:name=".view.contact.NewContactManTagsActivity" />
 
     </application>
 

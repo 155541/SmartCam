@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
 
-public class PreContactScanActivity extends AppCompatActivity {
+public class NewContactScanInfoActivity extends AppCompatActivity {
 
 
     @Override
