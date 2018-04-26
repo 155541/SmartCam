@@ -82,7 +82,7 @@ public abstract class AppDatabase extends RoomDatabase {
         
         private PopulateDatabaseAsync(AppDatabase appDatabase)
         {
-            mTagDao = db.tagDao();
+            mTagDao = appDatabase.tagDao();
         }
 
         @Override
