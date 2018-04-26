@@ -48,7 +48,9 @@ public abstract class AppDatabase extends RoomDatabase {
     @NonNull
     private static AppDatabase buildDatabaseInstance(@NonNull Context context)
     { 
-        return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, Constants.DB_NAME).build();
+        return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, Constants.DB_NAME)
+            .addCallback(dbCallback)
+            .build();
     }
     
     private static RoomDatabase.Callback dbCallback = new RoomDatabase.Callback()
