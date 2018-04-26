@@ -50,4 +50,47 @@ public abstract class AppDatabase extends RoomDatabase {
     { 
         return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, Constants.DB_NAME).build();
     }
+    
+    private static RoomDatabase.Callback dbCallback = new RoomDatabase.Callback()
+    {
+        @Override
+        public void onOpen (@NonNull SupportSQLiteDatabase db){
+            super.onOpen(db);
+            if(INSTANCE != null)
+            {
+                new PopulateDatabaseAsync(INSTANCE).execute();
+            }
+        }   
+    }
+    
+    private static class PopulateDatabaseAsync extends AsyncTask<Void, Void, Void>
+    {
+        private final TagDao mTagDao; //I supose "final" no will work
+        private final Tag[] predeterminateTags =  {
+                new Tag("Restaurant"),
+                new Tag("Bar"),
+                new Tag("Cheap"),
+                new Tag("Expensive"),
+                new Tag("Romantic"),
+                new Tag("Asia"),
+                new Tag("Sushi"),
+                new Tag("BBQ"),
+                new Tag("Hamburger")
+        };
+        
+        private PopulateDatabaseAsync(AppDatabase appDatabase)
+        {
+            mTagDao = db.tagDao();
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params)
+        {
+            if(!mTagDao.exists(predeterminateTags))
+            {
+                mTagDao.insert(predeterminateTags);
+            }
+            return null;
+        }
+    }
 }
