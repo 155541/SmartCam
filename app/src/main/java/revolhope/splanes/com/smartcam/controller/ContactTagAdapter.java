@@ -99,7 +99,8 @@ public class ContactTagAdapter extends RecyclerView.Adapter<ContactTagAdapter.Ho
 
     public void setTags(List<Tag> tags)
     {
-        this.tags =
+        this.tags = tags.toArray(new Tag[tags.size()]);
+        notifyDatasetChanged();
     }
 
     class Holder extends RecyclerView.ViewHolder
