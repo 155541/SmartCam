@@ -23,6 +23,9 @@ public interface TagDao
     @Query("SELECT * FROM " + Constants.TABLE_TAG +" ORDER BY tag_name ASC")
     LiveData<List<Tag>> getAll();
     
-    @Query("SELECT * FROM " + Constants.TABLE_TAG +" WHERE tag_id LIKE :tagId LIMIT 1")
-    LiveData<Tag> exists(String tagId);
+    @Query("SELECT COUNT(*) FROM " + Constants.TABLE_TAG +" WHERE tag_id LIKE :tagId LIMIT 1")
+    int count(String tagId);
+
+    @Query("SELECT * FROM " + Constants.TABLE_TAG + " WHERE tag_section_id LIKE :tagSectionId ORDER BY tag_name ASC")
+    LiveData<List<Tag>> getTagsFromSection(String tagSectionId);
 }

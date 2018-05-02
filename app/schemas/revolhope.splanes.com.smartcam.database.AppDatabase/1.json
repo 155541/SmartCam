@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f0d55f4598e7affd4a33be6455ef823d",
+    "identityHash": "0f9071f47ce6bcf191bb842e4dcd7fc4",
     "entities": [
       {
         "tableName": "table_contact",
@@ -56,7 +56,7 @@
       },
       {
         "tableName": "table_tag",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_id` TEXT NOT NULL, `tag_name` TEXT, PRIMARY KEY(`tag_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_id` TEXT NOT NULL, `tag_name` TEXT NOT NULL, `tag_section_id` TEXT NOT NULL, PRIMARY KEY(`tag_id`), FOREIGN KEY(`tag_section_id`) REFERENCES `table_tag_section`(`tagSectionId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "tagId",
@@ -68,7 +68,13 @@
             "fieldPath": "tagName",
             "columnName": "tag_name",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagSectionId",
+            "columnName": "tag_section_id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -85,9 +91,29 @@
               "tag_name"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_table_tag_tag_name` ON `${TABLE_NAME}` (`tag_name`)"
+          },
+          {
+            "name": "index_table_tag_tag_section_id",
+            "unique": false,
+            "columnNames": [
+              "tag_section_id"
+            ],
+            "createSql": "CREATE  INDEX `index_table_tag_tag_section_id` ON `${TABLE_NAME}` (`tag_section_id`)"
           }
         ],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "table_tag_section",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "tag_section_id"
+            ],
+            "referencedColumns": [
+              "tagSectionId"
+            ]
+          }
+        ]
       },
       {
         "tableName": "Note",
@@ -108,11 +134,46 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "table_tag_section",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tagSectionId` TEXT NOT NULL, `tagSectionName` TEXT NOT NULL, PRIMARY KEY(`tagSectionId`))",
+        "fields": [
+          {
+            "fieldPath": "tagSectionId",
+            "columnName": "tagSectionId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagSectionName",
+            "columnName": "tagSectionName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tagSectionId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_table_tag_section_tagSectionName",
+            "unique": true,
+            "columnNames": [
+              "tagSectionName"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_table_tag_section_tagSectionName` ON `${TABLE_NAME}` (`tagSectionName`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"f0d55f4598e7affd4a33be6455ef823d\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0f9071f47ce6bcf191bb842e4dcd7fc4\")"
     ]
   }
 }
