@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0f9071f47ce6bcf191bb842e4dcd7fc4",
+    "identityHash": "e3ea4b2f03e3f98d814ea830cdcd8620",
     "entities": [
       {
         "tableName": "table_contact",
@@ -56,7 +56,7 @@
       },
       {
         "tableName": "table_tag",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_id` TEXT NOT NULL, `tag_name` TEXT NOT NULL, `tag_section_id` TEXT NOT NULL, PRIMARY KEY(`tag_id`), FOREIGN KEY(`tag_section_id`) REFERENCES `table_tag_section`(`tagSectionId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_id` TEXT NOT NULL, `tag_name` TEXT NOT NULL, `tag_section_id` TEXT NOT NULL, PRIMARY KEY(`tag_id`), FOREIGN KEY(`tag_section_id`) REFERENCES `table_tag_section`(`tag_section_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "tagId",
@@ -110,7 +110,7 @@
               "tag_section_id"
             ],
             "referencedColumns": [
-              "tagSectionId"
+              "tag_section_id"
             ]
           }
         ]
@@ -137,43 +137,95 @@
       },
       {
         "tableName": "table_tag_section",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tagSectionId` TEXT NOT NULL, `tagSectionName` TEXT NOT NULL, PRIMARY KEY(`tagSectionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag_section_id` TEXT NOT NULL, `tag_section_name` TEXT NOT NULL, `tag_section_icon_id` TEXT, PRIMARY KEY(`tag_section_id`), FOREIGN KEY(`tag_section_icon_id`) REFERENCES `table_icon`(`icon_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "tagSectionId",
-            "columnName": "tagSectionId",
+            "columnName": "tag_section_id",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "tagSectionName",
-            "columnName": "tagSectionName",
+            "columnName": "tag_section_name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "tagSectionIconId",
+            "columnName": "tag_section_icon_id",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "tagSectionId"
+            "tag_section_id"
           ],
           "autoGenerate": false
         },
         "indices": [
           {
-            "name": "index_table_tag_section_tagSectionName",
+            "name": "index_table_tag_section_tag_section_name",
             "unique": true,
             "columnNames": [
-              "tagSectionName"
+              "tag_section_name"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_table_tag_section_tagSectionName` ON `${TABLE_NAME}` (`tagSectionName`)"
+            "createSql": "CREATE UNIQUE INDEX `index_table_tag_section_tag_section_name` ON `${TABLE_NAME}` (`tag_section_name`)"
+          },
+          {
+            "name": "index_table_tag_section_tag_section_icon_id",
+            "unique": false,
+            "columnNames": [
+              "tag_section_icon_id"
+            ],
+            "createSql": "CREATE  INDEX `index_table_tag_section_tag_section_icon_id` ON `${TABLE_NAME}` (`tag_section_icon_id`)"
           }
         ],
+        "foreignKeys": [
+          {
+            "table": "table_icon",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "tag_section_icon_id"
+            ],
+            "referencedColumns": [
+              "icon_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "table_icon",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`icon_id` TEXT NOT NULL, `icon_drawable_id` INTEGER NOT NULL, PRIMARY KEY(`icon_id`))",
+        "fields": [
+          {
+            "fieldPath": "iconId",
+            "columnName": "icon_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconDrawableId",
+            "columnName": "icon_drawable_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "icon_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
         "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0f9071f47ce6bcf191bb842e4dcd7fc4\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e3ea4b2f03e3f98d814ea830cdcd8620\")"
     ]
   }
 }

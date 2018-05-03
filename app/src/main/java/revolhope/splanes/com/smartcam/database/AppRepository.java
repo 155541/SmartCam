@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import revolhope.splanes.com.smartcam.model.Contact;
+import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagSection;
 
@@ -15,15 +16,12 @@ public class AppRepository {
     private TagDao mTagDao;
     private TagSectionDao mTagSectionDao;
     private ContactDao mContactDao;
-    //private NoteDao mNoteDao;
-
+    private IconDao mIconDao;
 
     private LiveData<List<Tag>> mAllTags;
     private LiveData<List<TagSection>> mAllTagSections;
-
-
+    private LiveData<List<Icon>> mAllIcons;
     private LiveData<List<Contact>> mAllContacts;
-    //private LiveData<List<Note>> mAllNotes;
 
     public AppRepository(Application app)
     {
@@ -32,16 +30,16 @@ public class AppRepository {
         mContactDao = appDatabase.contactDao();
         mTagDao = appDatabase.tagDao();
         mTagSectionDao = appDatabase.tagSectionDao();
-        //mNoteDao = appDatabase.noteDao();
+        mIconDao = appDatabase.iconDao();
 
         mAllContacts = mContactDao.getAll();
         mAllTags = mTagDao.getAll();
         mAllTagSections = mTagSectionDao.getAll();
-        //mAllNotes = mNoteDao.getAll();
+        mAllIcons = mIconDao.getAll();
     }
 
 
-    LiveData<List<Contact>> getAllContacts()
+    public LiveData<List<Contact>> getAllContacts()
     {
         return mAllContacts;
     }
@@ -51,15 +49,16 @@ public class AppRepository {
         return mAllTags;
     }
 
-
     public LiveData<List<TagSection>> getAllTagSections()
     {
         return mAllTagSections;
     }
 
-//    LiveData<List<Note>> getAllNotes() {
-//        return mAllNotes;
-//    }
+    public LiveData<List<Icon>> getAllIcons() { return mAllIcons; }
+
+
+
+
 
     public void insertTag (Tag... tags)
     {
@@ -69,6 +68,11 @@ public class AppRepository {
     public void insertTagSection(TagSection... tagSections)
     {
         new insertTagSectionAsyncTask(mTagSectionDao).execute(tagSections);
+    }
+
+    public void insertIcon(Icon... icons)
+    {
+        new insertIconAsynTask(mIconDao).execute(icons);
     }
 
     private static class insertTagAsyncTask extends AsyncTask<Tag, Void, Boolean>
@@ -122,6 +126,25 @@ public class AppRepository {
             if(mTagSectionDao!= null)
             {
                 mTagSectionDao.insert(tagSections);
+            }
+            return null;
+        }
+    }
+
+    private static class insertIconAsynTask extends AsyncTask<Icon, Void, Void>
+    {
+        private IconDao mIconDao;
+
+        private insertIconAsynTask(IconDao mIconDao)
+        {
+            this.mIconDao = mIconDao;
+        }
+
+        @Override
+        protected Void doInBackground(Icon... icons) {
+            if (mIconDao != null)
+            {
+                mIconDao.insert(icons);
             }
             return null;
         }

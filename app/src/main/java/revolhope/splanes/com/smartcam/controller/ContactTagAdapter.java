@@ -1,11 +1,14 @@
 package revolhope.splanes.com.smartcam.controller;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import revolhope.splanes.com.smartcam.R;
+import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagSection;
 
@@ -22,11 +26,15 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private TagSection[] tagSections;
     private LayoutInflater inflater;
     private AdapterCallback callback;
+    private List<Icon> icons;
     private Map<String, Tag[]> mMappedTags;
     private Map<String, List<Integer>> mapSectionTagsSelected;
 
+    private Resources resources;
+
     public ContactTagAdapter(@NonNull Context context, AdapterCallback callback)
     {
+        this.resources = context.getResources();
         this.inflater = LayoutInflater.from(context);
         this.callback = callback;
         this.mapSectionTagsSelected = new HashMap<>();
@@ -49,21 +57,37 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
     {
-        if (tagSections != null && tagSections.length > position-1 && position != 0)
+        if (tagSections != null && tagSections.length > position-1 && position != 0 && mMappedTags != null)
         {
             TagSectionHolder sectionHolder = (TagSectionHolder) holder;
             TagSection tagSection = tagSections[position-1];
+
+            sectionHolder.name.setText(tagSection.getTagSectionName());
+            for (Icon icon : icons)
+            {
+                if (icon.getIconId().equals(tagSection.getTagSectionIconId()))
+                {
+                    sectionHolder.icon.setImageDrawable(resources.getDrawable(icon.getIconDrawableId(), null));
+                    //sectionHolder.name.setCompoundDrawablePadding(8);
+                    //sectionHolder.name.setCompoundDrawables(null, null, null, resources.getDrawable(R.drawable.ic_people_black_24dp, null));
+                    break;
+                }
+            }
+
 
             List<Integer> listIndex = mapSectionTagsSelected.get(tagSection.getTagSectionId());
             Tag[] tags = mMappedTags.get(tagSection.getTagSectionId());
             StringBuilder sb = new StringBuilder();
             for (int index : listIndex)
             {
-                sb.append(tags[index].getTagName()).append(" ");
+                sb.append(tags[index].getTagName()).append(", ");
             }
             String str = sb.toString();
-
-            sectionHolder.name.setText(tagSection.getTagSectionName());
+            if (str.length() > 1)
+            {
+                sb.delete(str.length()-2,str.length()-1);
+            }
+            str = sb.toString();
             if (!str.isEmpty())
             {
                 sectionHolder.selectedTags.setText(str);
@@ -71,7 +95,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             else
             {
-                sectionHolder.selectedTags.setVisibility(View.GONE);
+                sectionHolder.selectedTags.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -105,6 +129,12 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
+    public void setIcons(List<Icon> icons)
+    {
+        this.icons = icons;
+        notifyDataSetChanged();
+    }
+
     public void setMappedTags (Map<String, Tag[]> mMappedTags)
     {
         this.mMappedTags = mMappedTags;
@@ -129,12 +159,14 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private class TagSectionHolder extends RecyclerView.ViewHolder
     {
         private TextView name;
+        private ImageView icon;
         private TextView selectedTags;
 
         private TagSectionHolder(View view)
         {
             super(view);
             name = view.findViewById(R.id.textView_section);
+            icon = view.findViewById(R.id.textview_icon);
             selectedTags = view.findViewById(R.id.textView_tags);
 
             view.setOnClickListener(new View.OnClickListener()

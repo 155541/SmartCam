@@ -17,7 +17,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
  */
 @Entity(tableName = "table_tag",
         indices = {@Index(value = {"tag_name"}, unique = true), @Index(value = {"tag_section_id"})},
-        foreignKeys = @ForeignKey(entity = TagSection.class, parentColumns = "tagSectionId",
+        foreignKeys = @ForeignKey(entity = TagSection.class, parentColumns = "tag_section_id",
                 childColumns = "tag_section_id", onDelete = CASCADE, onUpdate = CASCADE))
 public class Tag {
     

@@ -10,13 +10,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -30,8 +34,10 @@ import java.util.Map;
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.controller.ContactTagAdapter;
 import revolhope.splanes.com.smartcam.database.AppRepository;
+import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagSection;
+import revolhope.splanes.com.smartcam.model.viewmodel.IconViewModel;
 import revolhope.splanes.com.smartcam.model.viewmodel.TagSectionViewModel;
 import revolhope.splanes.com.smartcam.model.viewmodel.TagViewModel;
 
@@ -60,11 +66,44 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
         TagSectionViewModel tagSectionViewModel = ViewModelProviders.of(this).get(TagSectionViewModel.class);
         TagViewModel tagViewModel = ViewModelProviders.of(this).get(TagViewModel.class);
+        IconViewModel iconViewModel = ViewModelProviders.of(this).get(IconViewModel.class);
 
         final RecyclerView recyclerView = findViewById(R.id.recycler_view);
         mAdapter = new ContactTagAdapter(getApplicationContext(), this);
         recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        GridLayoutManager  mLayoutManager = new GridLayoutManager(this, 2);
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch(position){
+                    case 0:
+                        return 2;
+                    default:
+                        return 1;
+                }
+            }
+        });
+        recyclerView.setLayoutManager(mLayoutManager);
+
+        iconViewModel.getAllIcons().observe(this, new Observer<List<Icon>>() {
+            @Override
+            public void onChanged(@Nullable final List<Icon> icons)
+            {
+
+                if (icons != null)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            mAdapter.setIcons(icons);
+                        }
+                    });
+                }
+            }
+        });
 
         tagSectionViewModel.getAllTagSections().observe(this, new Observer<List<TagSection>>() {
             @Override
@@ -130,6 +169,28 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
             }
         });
+
+        findViewById(R.id.button_done).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+        if (id == android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 // =================================================================================================
@@ -239,7 +300,6 @@ public class NewContactManTagsActivity extends AppCompatActivity
     }
 
 
-
 // =================================================================================================
 //                                          DIALOGS
 // =================================================================================================
@@ -278,7 +338,14 @@ public class NewContactManTagsActivity extends AppCompatActivity
                     }
                 }
 
-                builder.setTitle("Choose tag - " + section.getTagSectionName());
+                Spannable spannable = new SpannableString("Choose tag - " + section.getTagSectionName());
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                builder.setTitle(spannable);
                 builder.setMultiChoiceItems(tagNames, checkedItems, new DialogInterface.OnMultiChoiceClickListener()
                 {
                     @Override
@@ -352,7 +419,13 @@ public class NewContactManTagsActivity extends AppCompatActivity
                 View view = LayoutInflater.from(context).inflate(R.layout.dialog_new_section, viewGroup , false);
                 final EditText editText = view.findViewById(R.id.editText);
 
-                builder.setTitle("New section");
+                Spannable spannable = new SpannableString("New section");
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.setTitle(spannable);
                 builder.setView(view);
                 builder.setPositiveButton("create", new DialogInterface.OnClickListener()
                 {
@@ -399,7 +472,14 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
                 final EditText editText = view.findViewById(R.id.editText);
 
-                builder.setTitle("New tag - " + section.getTagSectionName());
+                Spannable spannable = new SpannableString("New tag - " + section.getTagSectionName());
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                builder.setTitle(spannable);
                 builder.setView(view);
                 builder.setPositiveButton("Create", new DialogInterface.OnClickListener()
                 {
