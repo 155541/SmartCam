@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public interface TagSectionDao
     @Insert
     void insert(TagSection... tagSections);
 
+    @Update
+    int update(TagSection... tagSections);
+
     @Delete
     void delete(TagSection... tagSections);
 
@@ -25,5 +29,4 @@ public interface TagSectionDao
 
     @Query("SELECT COUNT(*) FROM " + Constants.TABLE_TAG_SECTION +" WHERE tag_section_id LIKE :tagSectionId LIMIT 1")
     int count(String tagSectionId);
-
 }

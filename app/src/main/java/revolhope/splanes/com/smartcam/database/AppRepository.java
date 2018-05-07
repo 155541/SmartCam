@@ -23,6 +23,10 @@ public class AppRepository {
     private LiveData<List<Icon>> mAllIcons;
     private LiveData<List<Contact>> mAllContacts;
 
+// =================================================================================================
+//                                        CONSTRUCTOR
+// =================================================================================================
+
     public AppRepository(Application app)
     {
         AppDatabase appDatabase = AppDatabase.getInstance(app);
@@ -38,6 +42,10 @@ public class AppRepository {
         mAllIcons = mIconDao.getAll();
     }
 
+
+// =================================================================================================
+//                                        SELECTS CALL
+// =================================================================================================
 
     public LiveData<List<Contact>> getAllContacts()
     {
@@ -57,8 +65,9 @@ public class AppRepository {
     public LiveData<List<Icon>> getAllIcons() { return mAllIcons; }
 
 
-
-
+// =================================================================================================
+//                                        INSERT CALL
+// =================================================================================================
 
     public void insertTag (Tag... tags)
     {
@@ -74,6 +83,20 @@ public class AppRepository {
     {
         new insertIconAsynTask(mIconDao).execute(icons);
     }
+
+
+// =================================================================================================
+//                                      UPDATE CALL
+// =================================================================================================
+
+    public void updateTagSection(TagSection... tagSections)
+    {
+        new updateTagSectionAsyncTask(mTagSectionDao).execute();
+    }
+
+// =================================================================================================
+//                            INSERTS ASYNC TASK IMPLEMENTATION
+// =================================================================================================
 
     private static class insertTagAsyncTask extends AsyncTask<Tag, Void, Boolean>
     {
@@ -145,6 +168,32 @@ public class AppRepository {
             if (mIconDao != null)
             {
                 mIconDao.insert(icons);
+            }
+            return null;
+        }
+    }
+
+
+// =================================================================================================
+//                              UPDATE ASYNC TASK IMPLEMENTATION
+// =================================================================================================
+
+    private static class updateTagSectionAsyncTask extends AsyncTask<TagSection, Void, Void>
+    {
+        TagSectionDao mTagSectionDao;
+
+        private updateTagSectionAsyncTask(TagSectionDao mTagSectionDao)
+        {
+            this.mTagSectionDao = mTagSectionDao;
+        }
+
+        @Override
+        protected Void doInBackground(TagSection... tagSections) {
+
+            if (mTagSectionDao != null)
+            {
+                int i = mTagSectionDao.update(tagSections);
+                System.out.println(" :......: ROWs UPDATED :......: " + i);
             }
             return null;
         }

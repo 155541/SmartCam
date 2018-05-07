@@ -6,7 +6,11 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -24,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -48,6 +53,9 @@ public class NewContactManTagsActivity extends AppCompatActivity
     private Map<String, Tag[]> mTagMap;
     private ContactTagAdapter mAdapter;
     private AppRepository appRepository;
+    private List<Icon> mIcons;
+
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +101,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
                 if (icons != null)
                 {
+                    mIcons = icons;
                     runOnUiThread(new Runnable()
                     {
                         @Override
@@ -211,11 +220,21 @@ public class NewContactManTagsActivity extends AppCompatActivity
             }
         }
 
+        Integer intResource = -300;
+        for ( Icon ic : mIcons)
+        {
+            if ( ic.getIconId().equals(section.getTagSectionIconId()))
+            {
+                intResource = ic.getIconDrawableId();
+            }
+        }
+
         ShowSectionTagsDialog dialog = new ShowSectionTagsDialog();
 
         dialog.tagNames = list.toArray(new String[0]);
         dialog.section = section;
         dialog.checkedList = checkedTags;
+        dialog.intResource = intResource;
         dialog.callback = new ShowSectionTagsDialogCallback()
         {
             @Override
@@ -283,8 +302,10 @@ public class NewContactManTagsActivity extends AppCompatActivity
     @Override
     public void onNewSection()
     {
-        CreateSectionDialog createSectionDialog = new CreateSectionDialog();
-        createSectionDialog.callback = new OnCreateSection()
+        InsertSectionDialog sectionDialog = new InsertSectionDialog();
+        sectionDialog.oldSection = null;
+        sectionDialog.isInsert = true;
+        sectionDialog.callback = new OnCreateSection()
         {
             @Override
             public void onCreate(String sectionName)
@@ -295,10 +316,100 @@ public class NewContactManTagsActivity extends AppCompatActivity
                     appRepository.insertTagSection(tagSection);
                 }
             }
+            @Override
+            public void onUpdate(TagSection tagSection) {
+            }
         };
-        createSectionDialog.show(getSupportFragmentManager(), "CreateSectionDialog");
+        sectionDialog.show(getSupportFragmentManager(), "CreateSectionDialog");
     }
 
+    @Override
+    public void onSectionLongClick(final TagSection section)
+    {
+        if ( vibrator == null )
+        {
+            vibrator = (Vibrator) getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            vibrator.vibrate(VibrationEffect.createOneShot(200, 60));
+        }
+        else if (vibrator != null)
+        {
+            vibrator.vibrate(200);
+        }
+
+        int intResource  = -300;
+        for (Icon icon : mIcons)
+        {
+            if (icon.getIconId().equals(section.getTagSectionIconId()))
+            {
+                intResource = icon.getIconDrawableId();
+            }
+        }
+
+        SectionTagOptionsDialog optionsDialog = new SectionTagOptionsDialog();
+        optionsDialog.section = section;
+        optionsDialog.intResource = intResource;
+        optionsDialog.callback = new SectionTagOptionCallback()
+        {
+            @Override
+            public void onOptionSelected(final int optionId)
+            {
+                if ( optionId != -1)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            switch (optionId)
+                            {
+                                case 0: // Show icons dialog UPDATE SECTION ICON
+
+                                    ShowIconsDialog iconsDialog = new ShowIconsDialog();
+                                    iconsDialog.mIcons = mIcons;
+                                    iconsDialog.section = section;
+
+
+                                    iconsDialog.show(getSupportFragmentManager(), "ShowIconsDialog");
+
+                                    break;
+                                case 1: // Show rename dialog UPDATE SECTION NAME
+
+                                    InsertSectionDialog insertSectionDialog = new InsertSectionDialog();
+                                    insertSectionDialog.oldSection = section;
+                                    insertSectionDialog.isInsert = false;
+                                    insertSectionDialog.callback = new OnCreateSection() {
+                                        @Override
+                                        public void onCreate(String sectionName) {}
+                                        @Override
+                                        public void onUpdate(TagSection tagSection)
+                                        {
+                                            if ( appRepository != null && tagSection != null)
+                                            {
+                                                System.out.println(" :......: To update :......: ");
+                                                System.out.println(" :......: ID: " + tagSection.getTagSectionId());
+                                                System.out.println(" :......: NAME: " + tagSection.getTagSectionName());
+                                                System.out.println(" :......: ICON_ID: " + tagSection.getTagSectionIconId());
+                                                appRepository.updateTagSection(tagSection);
+                                            }
+                                        }
+                                    };
+                                    insertSectionDialog.show(getSupportFragmentManager(), "InsertSectionDialog2");
+
+                                    break;
+                                case 2: // Show confirmation DELETE SECTION
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        optionsDialog.show(getSupportFragmentManager(), "SectionTagOptionsDialog");
+    }
 
 // =================================================================================================
 //                                          DIALOGS
@@ -311,6 +422,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
         private String[] tagNames;
         private TagSection section;
         private ShowSectionTagsDialogCallback callback;
+        private int intResource;
 
         @NonNull
         @Override
@@ -338,13 +450,22 @@ public class NewContactManTagsActivity extends AppCompatActivity
                     }
                 }
 
-                Spannable spannable = new SpannableString("Choose tag - " + section.getTagSectionName());
+                Spannable spannable = new SpannableString(section.getTagSectionName());
                 spannable.setSpan(
                         new ForegroundColorSpan(
                                 getResources().getColor(R.color.colorPrimaryDark, null)),
                         0, spannable.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+                if ( intResource != -300)
+                {
+                    Drawable drawable = context.getDrawable(intResource);
+                    if ( drawable != null )
+                    {
+                        drawable.setTint(context.getColor(R.color.colorPrimaryDark));
+                        builder.setIcon(drawable);
+                    }
+                }
                 builder.setTitle(spannable);
                 builder.setMultiChoiceItems(tagNames, checkedItems, new DialogInterface.OnMultiChoiceClickListener()
                 {
@@ -400,11 +521,13 @@ public class NewContactManTagsActivity extends AppCompatActivity
         }
     }
 
-    //////// CREATE SECTION
+    //////// CREATE SECTION and UPDATE NAME
 
-    public static class CreateSectionDialog extends DialogFragment
+    public static class InsertSectionDialog extends DialogFragment
     {
         private OnCreateSection callback;
+        private boolean isInsert;
+        private TagSection oldSection;
 
         @NonNull
         @Override
@@ -419,7 +542,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
                 View view = LayoutInflater.from(context).inflate(R.layout.dialog_new_section, viewGroup , false);
                 final EditText editText = view.findViewById(R.id.editText);
 
-                Spannable spannable = new SpannableString("New section");
+                Spannable spannable = new SpannableString(isInsert ? "New section" : "Update section");
                 spannable.setSpan(
                         new ForegroundColorSpan(
                                 getResources().getColor(R.color.colorPrimaryDark, null)),
@@ -427,12 +550,20 @@ public class NewContactManTagsActivity extends AppCompatActivity
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.setTitle(spannable);
                 builder.setView(view);
-                builder.setPositiveButton("create", new DialogInterface.OnClickListener()
+                builder.setPositiveButton(isInsert ? "create" : "update", new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        callback.onCreate(editText.getText().toString());
+                        if ( isInsert )
+                        {
+                            callback.onCreate(editText.getText().toString());
+                        }
+                        else
+                        {
+                            oldSection.setTagSectionName(editText.getText().toString());
+                            callback.onUpdate(oldSection);
+                        }
                     }
                 });
                 builder.setNeutralButton("cancel", new DialogInterface.OnClickListener()
@@ -506,6 +637,186 @@ public class NewContactManTagsActivity extends AppCompatActivity
         }
     }
 
+    //////// CREATE SECTION LONG CLICK OPTIONS
+    public static class SectionTagOptionsDialog extends DialogFragment
+    {
+        private SectionTagOptionCallback callback;
+        private TagSection section;
+        private int intResource;
+        private static final String[] settings = {
+                "Change section icon",
+                "Rename section",
+                "Delete section"
+        };
+        private int index = -1;
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            Context context = getContext();
+            if ( context != null )
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                Spannable spannable = new SpannableString(section.getTagSectionName());
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                if ( intResource != -300)
+                {
+                    Drawable drawable = context.getDrawable(intResource);
+                    if ( drawable != null )
+                    {
+                        drawable.setTint(context.getColor(R.color.colorPrimaryDark));
+                        builder.setIcon(drawable);
+                    }
+                }
+                builder.setTitle(spannable);
+                builder.setSingleChoiceItems(settings, -1, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        index = i;
+                    }
+                });
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        if ( index == -1 ) index = 0;
+                        callback.onOptionSelected(index);
+                    }
+                });
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                    }
+                });
+
+                return builder.create();
+            }
+            else
+            {
+                return super.onCreateDialog(savedInstanceState);
+            }
+        }
+    }
+
+    public static class ShowIconsDialog extends DialogFragment
+    {
+        private TagSection section;
+        private List<Icon> mIcons;
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+            Context context = getContext();
+            Activity activity = getActivity();
+            if ( context != null)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                ViewGroup viewGroup = activity != null ? (ViewGroup) activity.findViewById(android.R.id.content) : null;
+                View view = LayoutInflater.from(context).inflate(R.layout.dialog_pick_icon, viewGroup, false);
+
+                RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+
+                IconAdapter iconAdapter = new IconAdapter(context, mIcons);
+                recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
+                recyclerView.setAdapter(iconAdapter);
+
+                Spannable spannable = new SpannableString("Pick an icon for: " + section.getTagSectionName());
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+                builder.setTitle(spannable);
+                builder.setView(view);
+                builder.setPositiveButton("change", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+
+                    }
+                });
+                builder.setNegativeButton("cancel", null);
+
+
+                return builder.create();
+            }
+            else
+            {
+                return super.onCreateDialog(savedInstanceState);
+            }
+        }
+
+        private class IconAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        {
+            private LayoutInflater inflater;
+            private List<Icon> mIcons;
+
+            private IconAdapter(Context context, List<Icon> mIcons)
+            {
+                inflater = LayoutInflater.from(context);
+                this.mIcons = mIcons;
+            }
+
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+            {
+                return new Holder(inflater.inflate(R.layout.holder_icon_picker, parent, false));
+            }
+
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
+            {
+                if ( mIcons != null && mIcons.size() > position )
+                {
+                    ((Holder) holder).icon.setImageResource(mIcons.get(position).getIconDrawableId());
+                }
+            }
+
+
+            @Override
+            public int getItemCount() {
+                return 0;
+            }
+
+            private class Holder extends RecyclerView.ViewHolder
+            {
+                ImageView icon;
+
+                private Holder (View view)
+                {
+                    super(view);
+                    icon = view.findViewById(R.id.imageView_icon);
+                    view.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+
+                        }
+                    });
+                }
+            }
+        }
+    }
+
 // =================================================================================================
 //                                  CALLBACK DIALOG: SHOW TAGS
 // =================================================================================================
@@ -523,6 +834,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
     private interface OnCreateSection
     {
         void onCreate(String sectionName);
+        void onUpdate(TagSection tagSection);
     }
 
 // =================================================================================================
@@ -532,6 +844,15 @@ public class NewContactManTagsActivity extends AppCompatActivity
     private interface OnCreateTag
     {
         void onCreate(String tagName, String sectionId);
+    }
+
+// =================================================================================================
+//                              CALLBACK DIALOG: SECTION TAG OPTIONS
+// =================================================================================================
+
+    private interface SectionTagOptionCallback
+    {
+        void onOptionSelected(int optionId);
     }
 
 }

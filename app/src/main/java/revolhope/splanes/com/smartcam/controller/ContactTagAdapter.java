@@ -2,7 +2,6 @@ package revolhope.splanes.com.smartcam.controller;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -151,6 +150,7 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public interface AdapterCallback
     {
         void onSectionClick(TagSection section, List<Integer> checkedItems);
+        void onSectionLongClick(TagSection section);
         void onNewSection();
     }
 
@@ -183,6 +183,17 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         TagSection section = tagSections[getAdapterPosition()-1];
                         callback.onSectionClick(section, mapSectionTagsSelected.get(section.getTagSectionId()));
                     }
+                }
+            });
+
+            view.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                @Override
+                public boolean onLongClick(View view)
+                {
+                    TagSection section = tagSections[getAdapterPosition()-1];
+                    callback.onSectionLongClick(section);
+                    return true;
                 }
             });
         }
