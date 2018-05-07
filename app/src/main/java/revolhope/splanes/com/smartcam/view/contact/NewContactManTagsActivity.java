@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -371,7 +372,29 @@ public class NewContactManTagsActivity extends AppCompatActivity
                                     ShowIconsDialog iconsDialog = new ShowIconsDialog();
                                     iconsDialog.mIcons = mIcons;
                                     iconsDialog.section = section;
-
+                                    iconsDialog.callback = new IconDialogCallback()
+                                    {
+                                        @Override
+                                        public void onIconSelected(Icon icon)
+                                        {
+                                            if (icon != null && appRepository != null)
+                                            {
+                                                section.setTagSectionIconId(icon.getIconId());
+                                                appRepository.updateTagSection(section);
+                                            }
+                                            else
+                                            {
+                                                runOnUiThread(new Runnable()
+                                                {
+                                                    @Override
+                                                    public void run()
+                                                    {
+                                                        Toast.makeText(getApplicationContext(), "You must pick one icon", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    };
 
                                     iconsDialog.show(getSupportFragmentManager(), "ShowIconsDialog");
 
@@ -710,10 +733,13 @@ public class NewContactManTagsActivity extends AppCompatActivity
         }
     }
 
+    //////// UPDATE SECTION ICON DIALOG
     public static class ShowIconsDialog extends DialogFragment
     {
         private TagSection section;
         private List<Icon> mIcons;
+        private Icon selectedIcon;
+        private IconDialogCallback callback;
 
         @NonNull
         @Override
@@ -730,6 +756,15 @@ public class NewContactManTagsActivity extends AppCompatActivity
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
                 IconAdapter iconAdapter = new IconAdapter(context, mIcons);
+                iconAdapter.callback = new IconAdapterCallback()
+                {
+                    @Override
+                    public void onIconSelected(Icon icon)
+                    {
+                        selectedIcon = icon;
+                    }
+                };
+
                 recyclerView.setLayoutManager(new GridLayoutManager(context, 4));
                 recyclerView.setAdapter(iconAdapter);
 
@@ -748,7 +783,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-
+                        callback.onIconSelected(selectedIcon);
                     }
                 });
                 builder.setNegativeButton("cancel", null);
@@ -766,25 +801,32 @@ public class NewContactManTagsActivity extends AppCompatActivity
         {
             private LayoutInflater inflater;
             private List<Icon> mIcons;
+            private List<Holder> mHolders;
+            private IconAdapterCallback callback;
+            private int size;
 
-            private IconAdapter(Context context, List<Icon> mIcons)
+            private IconAdapter(Context context, @NonNull List<Icon> mIcons)
             {
                 inflater = LayoutInflater.from(context);
                 this.mIcons = mIcons;
+                size = mIcons.size();
+                mHolders = new ArrayList<>();
             }
 
             @NonNull
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
             {
-                return new Holder(inflater.inflate(R.layout.holder_icon_picker, parent, false));
+                Holder holder = new Holder(inflater.inflate(R.layout.holder_icon_picker, parent, false));
+                mHolders.add(holder);
+                return holder;
             }
 
 
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
             {
-                if ( mIcons != null && mIcons.size() > position )
+                if ( mIcons != null && size > position )
                 {
                     ((Holder) holder).icon.setImageResource(mIcons.get(position).getIconDrawableId());
                 }
@@ -792,28 +834,55 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
 
             @Override
-            public int getItemCount() {
-                return 0;
+            public int getItemCount()
+            {
+                return size;
             }
 
             private class Holder extends RecyclerView.ViewHolder
             {
-                ImageView icon;
+                private ImageView icon;
+                private LinearLayout linearLayout;
 
                 private Holder (View view)
                 {
                     super(view);
+
                     icon = view.findViewById(R.id.imageView_icon);
+                    linearLayout = view.findViewById(R.id.linearLayout);
+
                     view.setOnClickListener(new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View view)
                         {
+                            int index = getAdapterPosition();
+                            if (index < size)
+                            {
+                                Icon icon = mIcons.get(index);
 
+                                for (Holder holder : mHolders)
+                                {
+                                    if (holder.getAdapterPosition() != getAdapterPosition())
+                                    {
+                                        holder.linearLayout.setBackgroundColor(getResources().getColor(android.R.color.white, null));
+                                    }
+                                    else
+                                    {
+                                        holder.linearLayout.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark, null));
+                                    }
+                                }
+                                callback.onIconSelected(icon);
+                            }
                         }
                     });
                 }
             }
+        }
+
+        private interface IconAdapterCallback
+        {
+            void onIconSelected(Icon icon);
         }
     }
 
@@ -855,4 +924,12 @@ public class NewContactManTagsActivity extends AppCompatActivity
         void onOptionSelected(int optionId);
     }
 
+// =================================================================================================
+//                              CALLBACK DIALOG: SHOW ICONS
+// =================================================================================================
+
+    private interface IconDialogCallback
+    {
+        void onIconSelected(Icon icon);
+    }
 }
