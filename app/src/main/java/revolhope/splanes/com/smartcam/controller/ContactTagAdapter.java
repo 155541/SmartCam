@@ -145,6 +145,8 @@ public class ContactTagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
+    public Map<String, List<Integer>> getMapSectionTagsSelected() { return this.mapSectionTagsSelected; }
+
     // ADAPTER CALLBACK
 
     public interface AdapterCallback

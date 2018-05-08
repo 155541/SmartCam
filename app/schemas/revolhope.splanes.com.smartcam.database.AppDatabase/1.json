@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e3ea4b2f03e3f98d814ea830cdcd8620",
+    "identityHash": "537e497589c714f7d2f52b8627fa2ffc",
     "entities": [
       {
         "tableName": "table_contact",
@@ -221,11 +221,78 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "table_contact_tag",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contact_id` TEXT NOT NULL, `tag_id` TEXT NOT NULL, PRIMARY KEY(`contact_id`, `tag_id`), FOREIGN KEY(`contact_id`) REFERENCES `table_contact`(`contact_id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`tag_id`) REFERENCES `table_tag`(`tag_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "contactId",
+            "columnName": "contact_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagId",
+            "columnName": "tag_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "contact_id",
+            "tag_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_table_contact_tag_contact_id",
+            "unique": false,
+            "columnNames": [
+              "contact_id"
+            ],
+            "createSql": "CREATE  INDEX `index_table_contact_tag_contact_id` ON `${TABLE_NAME}` (`contact_id`)"
+          },
+          {
+            "name": "index_table_contact_tag_tag_id",
+            "unique": false,
+            "columnNames": [
+              "tag_id"
+            ],
+            "createSql": "CREATE  INDEX `index_table_contact_tag_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "table_contact",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "contact_id"
+            ],
+            "referencedColumns": [
+              "contact_id"
+            ]
+          },
+          {
+            "table": "table_tag",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "tag_id"
+            ],
+            "referencedColumns": [
+              "tag_id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e3ea4b2f03e3f98d814ea830cdcd8620\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"537e497589c714f7d2f52b8627fa2ffc\")"
     ]
   }
 }

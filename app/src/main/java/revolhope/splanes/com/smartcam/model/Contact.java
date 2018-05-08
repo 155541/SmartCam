@@ -6,10 +6,11 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity(tableName = "table_contact")
-public class Contact {
+public class Contact implements Serializable {
     
     @PrimaryKey
     @NonNull
@@ -31,7 +32,8 @@ public class Contact {
 
     @ColumnInfo(name = "contact_address")
     private String contactAddress;
-    
+
+
     @Ignore
     public Contact(@NonNull String name, String phone, String mail, String address, String web)
     {

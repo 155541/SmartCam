@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import revolhope.splanes.com.smartcam.model.Contact;
+import revolhope.splanes.com.smartcam.model.ContactTag;
 import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagSection;
@@ -17,11 +18,13 @@ public class AppRepository {
     private TagSectionDao mTagSectionDao;
     private ContactDao mContactDao;
     private IconDao mIconDao;
+    private ContactTagDao mContactTagDao;
 
     private LiveData<List<Tag>> mAllTags;
     private LiveData<List<TagSection>> mAllTagSections;
     private LiveData<List<Icon>> mAllIcons;
     private LiveData<List<Contact>> mAllContacts;
+    private LiveData<List<ContactTag>> mAllContactTags;
 
 // =================================================================================================
 //                                        CONSTRUCTOR
@@ -35,11 +38,13 @@ public class AppRepository {
         mTagDao = appDatabase.tagDao();
         mTagSectionDao = appDatabase.tagSectionDao();
         mIconDao = appDatabase.iconDao();
+        mContactTagDao = appDatabase.contactTagDao();
 
         mAllContacts = mContactDao.getAll();
         mAllTags = mTagDao.getAll();
         mAllTagSections = mTagSectionDao.getAll();
         mAllIcons = mIconDao.getAll();
+        mAllContactTags = mContactTagDao.getAll();
     }
 
 
@@ -64,6 +69,8 @@ public class AppRepository {
 
     public LiveData<List<Icon>> getAllIcons() { return mAllIcons; }
 
+    public LiveData<List<ContactTag>> getAllContactTags() {return mAllContactTags; }
+
 
 // =================================================================================================
 //                                        INSERT CALL
@@ -81,9 +88,18 @@ public class AppRepository {
 
     public void insertIcon(Icon... icons)
     {
-        new insertIconAsynTask(mIconDao).execute(icons);
+        new insertIconAsyncTask(mIconDao).execute(icons);
     }
 
+    public void insertContactTag(ContactTag... contactTags)
+    {
+        new insertContactTagAsyncTask(mContactTagDao).execute(contactTags);
+    }
+
+    public void insertContact(Contact... contacts)
+    {
+        new insertContactAsyncTask(mContactDao).execute(contacts);
+    }
 
 // =================================================================================================
 //                                      UPDATE CALL
@@ -91,8 +107,19 @@ public class AppRepository {
 
     public void updateTagSection(TagSection... tagSections)
     {
-        new updateTagSectionAsyncTask(mTagSectionDao).execute();
+        new updateTagSectionAsyncTask(mTagSectionDao).execute(tagSections);
     }
+
+
+// =================================================================================================
+//                                      DELETE CALL
+// =================================================================================================
+
+    public void deleteTagSection(TagSection... tagSections)
+    {
+        new deleteTagSectionAsyncTask(mTagSectionDao).execute(tagSections);
+    }
+
 
 // =================================================================================================
 //                            INSERTS ASYNC TASK IMPLEMENTATION
@@ -154,11 +181,11 @@ public class AppRepository {
         }
     }
 
-    private static class insertIconAsynTask extends AsyncTask<Icon, Void, Void>
+    private static class insertIconAsyncTask extends AsyncTask<Icon, Void, Void>
     {
         private IconDao mIconDao;
 
-        private insertIconAsynTask(IconDao mIconDao)
+        private insertIconAsyncTask(IconDao mIconDao)
         {
             this.mIconDao = mIconDao;
         }
@@ -173,6 +200,46 @@ public class AppRepository {
         }
     }
 
+    private static class insertContactTagAsyncTask extends AsyncTask<ContactTag, Void, Void>
+    {
+        private ContactTagDao mContactTagDao;
+
+        private insertContactTagAsyncTask(ContactTagDao mContactTagDao)
+        {
+            this.mContactTagDao = mContactTagDao;
+        }
+
+        @Override
+        protected Void doInBackground(ContactTag... contactTags)
+        {
+            if (mContactTagDao != null)
+            {
+                mContactTagDao.insert(contactTags);
+            }
+            return null;
+        }
+    }
+
+    private static class insertContactAsyncTask extends AsyncTask<Contact, Void, Void>
+    {
+
+        private ContactDao mContactDao;
+
+        public insertContactAsyncTask(ContactDao mContactDao)
+        {
+            this.mContactDao = mContactDao;
+        }
+
+        @Override
+        protected Void doInBackground(Contact... contacts) {
+
+            if (mContactDao != null)
+            {
+                mContactDao.insertAll(contacts);
+            }
+            return null;
+        }
+    }
 
 // =================================================================================================
 //                              UPDATE ASYNC TASK IMPLEMENTATION
@@ -192,8 +259,33 @@ public class AppRepository {
 
             if (mTagSectionDao != null)
             {
-                int i = mTagSectionDao.update(tagSections);
-                System.out.println(" :......: ROWs UPDATED :......: " + i);
+                mTagSectionDao.update(tagSections);
+            }
+            return null;
+        }
+    }
+
+
+// =================================================================================================
+//                              DELETE ASYNC TASK IMPLEMENTATION
+// =================================================================================================
+
+    private static class deleteTagSectionAsyncTask extends AsyncTask<TagSection, Void, Void>
+    {
+
+        TagSectionDao mTagSectionDao;
+
+        private deleteTagSectionAsyncTask(TagSectionDao mTagSectionDao)
+        {
+            this.mTagSectionDao = mTagSectionDao;
+        }
+
+        @Override
+        protected Void doInBackground(TagSection... tagSections) {
+
+            if (mTagSectionDao != null)
+            {
+                mTagSectionDao.delete(tagSections);
             }
             return null;
         }

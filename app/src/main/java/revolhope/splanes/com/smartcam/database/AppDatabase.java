@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
 import revolhope.splanes.com.smartcam.model.Contact;
+import revolhope.splanes.com.smartcam.model.ContactTag;
 import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Note;
 import revolhope.splanes.com.smartcam.model.Tag;
@@ -23,7 +24,7 @@ import revolhope.splanes.com.smartcam.model.TagSection;
  * ---> https://codelabs.developers.google.com/codelabs/android-room-with-a-view/#0 <---
  * =============================================================================== */
 
-@Database(entities = {Contact.class, Tag.class, Note.class, TagSection.class, Icon.class}, version = 1)
+@Database(entities = {Contact.class, Tag.class, Note.class, TagSection.class, Icon.class, ContactTag.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     
     private static AppDatabase INSTANCE;
@@ -32,6 +33,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TagDao tagDao();
     public abstract TagSectionDao tagSectionDao();
     public abstract IconDao iconDao();
+    public abstract ContactTagDao contactTagDao();
     //public abstract NotesDao notesDao();
 
 

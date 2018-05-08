@@ -21,6 +21,8 @@ public class Constants
     public static final String CONTACT_MAIL = "MAIL";
     public static final String CONTACT_LOCATION = "LOCATION";
     public static final String CONTACT_WEB = "WEB";
+    public static final String CONTACT_OBJ = "CONTACT_OBJ";
+
 
     // Camera
     public static final boolean AUTO_HIDE = true;
@@ -43,6 +45,7 @@ public class Constants
     public static final String TABLE_TAG = "table_tag";
     public static final String TABLE_TAG_SECTION = "table_tag_section";
     public static final String TABLE_ICON = "table_icon";
+    public static final String TABLE_CONTACT_TAG = "table_contact_tag";
 
     // Translation constants
     public static final String TRANSLATION_MODEL_NMT = "nmt";

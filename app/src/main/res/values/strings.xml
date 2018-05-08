@@ -34,4 +34,6 @@
     <string name="button_done">DONE</string>
     <string name="prompt_add_category">Add category</string>
     <string name="prompt_add_section">Add section</string>
+    <string name="hint_section_name">Enter section name</string>
+    <string name="hint_no_phone">No phone available</string>
 </resources>

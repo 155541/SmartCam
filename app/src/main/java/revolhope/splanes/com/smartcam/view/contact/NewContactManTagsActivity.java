@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,9 @@ import java.util.Map;
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.controller.ContactTagAdapter;
 import revolhope.splanes.com.smartcam.database.AppRepository;
+import revolhope.splanes.com.smartcam.helper.Constants;
+import revolhope.splanes.com.smartcam.model.Contact;
+import revolhope.splanes.com.smartcam.model.ContactTag;
 import revolhope.splanes.com.smartcam.model.Icon;
 import revolhope.splanes.com.smartcam.model.Tag;
 import revolhope.splanes.com.smartcam.model.TagSection;
@@ -55,6 +59,7 @@ public class NewContactManTagsActivity extends AppCompatActivity
     private ContactTagAdapter mAdapter;
     private AppRepository appRepository;
     private List<Icon> mIcons;
+    static NewContactManInfoActivity.ContactFinishedCallback finishCallback;
 
     private Vibrator vibrator;
 
@@ -119,7 +124,6 @@ public class NewContactManTagsActivity extends AppCompatActivity
             @Override
             public void onChanged(@Nullable final List<TagSection> tagSections)
             {
-
                 if ( tagSections != null)
                 {
                     runOnUiThread(new Runnable()
@@ -185,7 +189,50 @@ public class NewContactManTagsActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
+                String msg = null;
+                if ( appRepository != null )
+                {
+                    Map<String, List<Integer>> map = mAdapter.getMapSectionTagsSelected();
+                    Intent intent = getIntent();
+                    if ( map != null && intent != null)
+                    {
+                        Contact contact = new Contact(
+                                intent.getStringExtra(Constants.CONTACT_NAME),
+                                intent.getStringExtra(Constants.CONTACT_PHONE),
+                                intent.getStringExtra(Constants.CONTACT_MAIL),
+                                intent.getStringExtra(Constants.CONTACT_LOCATION),
+                                intent.getStringExtra(Constants.CONTACT_WEB)
+                        );
+                        List<ContactTag> contactTags = new ArrayList<>();
+                        for (String sectionId : map.keySet())
+                        {
+                            List<Integer> selectedList = map.get(sectionId);
+                            Tag[] tags = mTagMap.get(sectionId);
+                            for (int index : selectedList)
+                            {
+                                if(index < tags.length)
+                                {
+                                    contactTags.add(new ContactTag(contact.getContactId(), tags[index].getTagId()));
+                                }
+                            }
+                        }
 
+                        appRepository.insertContact(contact);
+                        appRepository.insertContactTag(contactTags.toArray(new ContactTag[0]));
+                        finish();
+                        finishCallback.onContactSet();
+                        msg = "Contact created";
+                    }
+                }
+                else
+                {
+                    msg = "Oops.. Problems while storing contact\ntry again later..";
+                }
+
+                if ( msg != null)
+                {
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -424,6 +471,21 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
                                     break;
                                 case 2: // Show confirmation DELETE SECTION
+
+                                    DeleteSectionDialog deleteSectionDialog = new DeleteSectionDialog();
+                                    deleteSectionDialog.section = section;
+                                    deleteSectionDialog.callback = new DeleteDialogCallback()
+                                    {
+                                        @Override
+                                        public void onDelete()
+                                        {
+                                            if ( appRepository != null )
+                                            {
+                                                appRepository.deleteTagSection(section);
+                                            }
+                                        }
+                                    };
+                                    deleteSectionDialog.show(getSupportFragmentManager(), "DeleteSectionDialog");
                                     break;
                             }
                         }
@@ -545,7 +607,6 @@ public class NewContactManTagsActivity extends AppCompatActivity
     }
 
     //////// CREATE SECTION and UPDATE NAME
-
     public static class InsertSectionDialog extends DialogFragment
     {
         private OnCreateSection callback;
@@ -625,6 +686,8 @@ public class NewContactManTagsActivity extends AppCompatActivity
                 View view = LayoutInflater.from(context).inflate(R.layout.dialog_new_section, viewGroup , false);
 
                 final EditText editText = view.findViewById(R.id.editText);
+                editText.setHint("Enter tag");
+
 
                 Spannable spannable = new SpannableString("New tag - " + section.getTagSectionName());
                 spannable.setSpan(
@@ -743,7 +806,8 @@ public class NewContactManTagsActivity extends AppCompatActivity
 
         @NonNull
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
 
             Context context = getContext();
             Activity activity = getActivity();
@@ -886,8 +950,53 @@ public class NewContactManTagsActivity extends AppCompatActivity
         }
     }
 
+    //////// DELETE SECTION DIALOG
+    public static class DeleteSectionDialog extends DialogFragment
+    {
+        private TagSection section;
+        private DeleteDialogCallback callback;
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
+
+            Context context = getContext();
+
+            if ( context != null )
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                Spannable spannable = new SpannableString("Be aware");
+                spannable.setSpan(
+                        new ForegroundColorSpan(
+                                getResources().getColor(R.color.colorPrimaryDark, null)),
+                        0, spannable.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                builder.setTitle(spannable);
+                builder.setMessage("Are you sure you want to delete " + section.getTagSectionName() + " ?\n\nThis action can not be undone");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i)
+                    {
+                        callback.onDelete();
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+
+                return builder.create();
+            }
+            else
+            {
+                return super.onCreateDialog(savedInstanceState);
+            }
+        }
+    }
+
 // =================================================================================================
-//                                  CALLBACK DIALOG: SHOW TAGS
+//                                CALLBACK DIALOG: SHOW TAGS
 // =================================================================================================
 
     private interface ShowSectionTagsDialogCallback
@@ -931,5 +1040,13 @@ public class NewContactManTagsActivity extends AppCompatActivity
     private interface IconDialogCallback
     {
         void onIconSelected(Icon icon);
+    }
+
+// =================================================================================================
+//                              CALLBACK DIALOG: DELETE SECTION TAG
+// =================================================================================================
+    private interface DeleteDialogCallback
+    {
+        void onDelete();
     }
 }

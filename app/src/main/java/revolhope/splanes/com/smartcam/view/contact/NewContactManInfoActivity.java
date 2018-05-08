@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.Serializable;
+
 import revolhope.splanes.com.smartcam.R;
 import revolhope.splanes.com.smartcam.helper.Constants;
 
@@ -69,6 +71,12 @@ public class NewContactManInfoActivity extends AppCompatActivity {
                     i.putExtra(Constants.CONTACT_MAIL, textInputEditText_Mail.getText().toString());
                     i.putExtra(Constants.CONTACT_LOCATION, textInputEditText_Address.getText().toString());
                     i.putExtra(Constants.CONTACT_WEB, textInputEditText_Web.getText().toString());
+                    NewContactManTagsActivity.finishCallback = new ContactFinishedCallback() {
+                        @Override
+                        public void onContactSet() {
+                            finish();
+                        }
+                    };
                     startActivity(i);
                 }
                 else
@@ -192,5 +200,10 @@ public class NewContactManInfoActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    interface ContactFinishedCallback extends Serializable
+    {
+        void onContactSet();
     }
 }
